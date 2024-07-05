@@ -109,15 +109,16 @@ class ProductCardShimmer extends StatelessWidget {
 
 class ShimmerEffect extends StatelessWidget {
   const ShimmerEffect({super.key, required this.content});
+
   final Widget content;
+
   @override
   Widget build(BuildContext context) {
     return Center(
       child: Shimmer.fromColors(
           period: const Duration(seconds: 1),
-          baseColor:Colors.grey[300]!,
-          highlightColor:
-        Colors.grey[100]!,
+          baseColor: Colors.grey[300]!,
+          highlightColor: Colors.grey[100]!,
           child: content),
     );
   }
@@ -126,14 +127,14 @@ class ShimmerEffect extends StatelessWidget {
 class ShimmerImageEffect extends StatelessWidget {
   const ShimmerImageEffect({Key? key, required this.content}) : super(key: key);
   final Widget content;
+
   @override
   Widget build(BuildContext context) {
     return Center(
       child: Shimmer.fromColors(
           period: const Duration(seconds: 1),
-          baseColor:  Colors.grey[200]!,
-          highlightColor:
-            Colors.grey[100]!,
+          baseColor: Colors.grey[200]!,
+          highlightColor: Colors.grey[100]!,
           child: content),
     );
   }
@@ -320,7 +321,7 @@ class MainCategoriesListVerticalShimmer extends StatelessWidget {
 }
 
 class ProductListVerticalShimmer extends StatelessWidget {
-  const ProductListVerticalShimmer({Key? key}) : super(key: key);
+  const ProductListVerticalShimmer({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -338,10 +339,10 @@ class ProductListVerticalShimmer extends StatelessWidget {
               childCount: 12,
             ),
             gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 3,
-              mainAxisSpacing: 18.h,
-              crossAxisSpacing: 12.w,
-              childAspectRatio: 120.w / 230.h,
+              crossAxisCount: 2,
+              mainAxisSpacing: 27.h,
+              crossAxisSpacing: 30.w,
+              childAspectRatio: 176.w / 227.h,
             ),
           ),
         ],

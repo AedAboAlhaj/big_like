@@ -104,6 +104,7 @@ class _OrdersScreenState extends State<OrdersScreen>
           (Connectivity().checkConnectivity()),
         ]),
         builder: (BuildContext context, AsyncSnapshot snapshot) {
+          print(snapshot);
           if (snapshot.hasData) {
             if (orderBloc.ordersList.isEmpty) {
               orderBloc.ordersList = snapshot.data[0];
@@ -138,8 +139,8 @@ class _OrdersScreenState extends State<OrdersScreen>
                           children: [
                             orderBloc.ordersList
                                     .where((element) =>
-                                        element.status != 'done' &&
-                                        element.status != 'canceled')
+                                        element.status != 2 &&
+                                        element.status != 3)
                                     .toList()
                                     .isNotEmpty
                                 ? RefreshIndicator(
@@ -157,9 +158,8 @@ class _OrdersScreenState extends State<OrdersScreen>
                                           return OrderCard(
                                             orderApiModel: orderBloc.ordersList
                                                 .where((element) =>
-                                                    element.status != 'done' &&
-                                                    element.status !=
-                                                        'canceled')
+                                                    element.status != 2 &&
+                                                    element.status != 3)
                                                 .toList()[index],
                                           );
                                         },
@@ -170,8 +170,8 @@ class _OrdersScreenState extends State<OrdersScreen>
                                         },
                                         itemCount: orderBloc.ordersList
                                             .where((element) =>
-                                                element.status != 'done' &&
-                                                element.status != 'canceled')
+                                                element.status != 2 &&
+                                                element.status != 3)
                                             .toList()
                                             .length),
                                   )
@@ -179,8 +179,8 @@ class _OrdersScreenState extends State<OrdersScreen>
                                     child: Text('لا يوجد لديك طلبات جديدة')),
                             orderBloc.ordersList
                                     .where((element) =>
-                                        element.status == 'done' ||
-                                        element.status == 'canceled')
+                                        element.status == 2 ||
+                                        element.status == 3)
                                     .toList()
                                     .isNotEmpty
                                 ? RefreshIndicator(
@@ -198,9 +198,8 @@ class _OrdersScreenState extends State<OrdersScreen>
                                           return OrderCard(
                                             orderApiModel: orderBloc.ordersList
                                                 .where((element) =>
-                                                    element.status == 'done' ||
-                                                    element.status ==
-                                                        'canceled')
+                                                    element.status == 2 ||
+                                                    element.status == 3)
                                                 .toList()
                                                 .toList()[index],
                                           );
@@ -212,8 +211,8 @@ class _OrdersScreenState extends State<OrdersScreen>
                                         },
                                         itemCount: orderBloc.ordersList
                                             .where((element) =>
-                                                element.status == 'done' ||
-                                                element.status == 'canceled')
+                                                element.status == 2 ||
+                                                element.status == 3)
                                             .toList()
                                             .toList()
                                             .length),
@@ -250,7 +249,10 @@ class _OrdersScreenState extends State<OrdersScreen>
                                             fontWeight: FontWeight.w700,
                                             color: selectedOrdersPage == 0
                                                 ? kPrimaryColor
-                                                : Theme.of(context).cardColor),
+                                                : Theme.of(context)
+                                                    .textTheme
+                                                    .bodySmall
+                                                    ?.color),
                                       ),
                                       SizedBox(
                                         height: 11.h,

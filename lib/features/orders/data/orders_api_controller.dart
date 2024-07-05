@@ -5,7 +5,6 @@ import 'package:http/http.dart' as http;
 import '../domain/models/order_api_model.dart';
 
 class OrdersApiController {
-
   Future<List<OrderApiModel>> getUserOrders() async {
     final token = await AppSecureStorage().getToken();
     var url = Uri.parse(ApiSettings.orders);
@@ -22,6 +21,7 @@ class OrdersApiController {
     } catch (e) {
       return [];
     }
+    print(token);
     if (response.statusCode == 200) {
       var jsonObject = jsonDecode(response.body);
       var productsJsonArray = (jsonObject['data'] as List);
@@ -39,5 +39,4 @@ class OrdersApiController {
 
     return [];
   }
-
 }

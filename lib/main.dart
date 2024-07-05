@@ -6,12 +6,15 @@ import 'package:big_like/features/auth/presentation/screens/country_screen.dart'
 import 'package:big_like/features/auth/presentation/screens/enter_otp_screen.dart';
 import 'package:big_like/features/auth/presentation/screens/register_screen.dart';
 import 'package:big_like/features/check_out/bloc/checkout_bloc.dart';
+import 'package:big_like/features/check_out/bloc/workers_bloc.dart';
 import 'package:big_like/features/check_out/data/checkout_api_controller.dart';
 import 'package:big_like/features/check_out/presentation/screens/thanks_screen.dart';
 import 'package:big_like/features/home/blocs/app_cubit.dart';
 import 'package:big_like/features/orders/bloc/order_bloc.dart';
 import 'package:big_like/features/orders/data/orders_api_controller.dart';
+import 'package:big_like/features/products/bloc/cart_cubit.dart';
 import 'package:big_like/features/services/data/services_api_controller.dart';
+import 'package:big_like/features/worker_times/bloc/order_cubit.dart';
 import 'package:big_like/local_storage/secure_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -78,8 +81,14 @@ class _MyAppState extends State<MyApp> {
           BlocProvider<CheckoutBloc>(
               create: (context) =>
                   CheckoutBloc(context.read<CheckoutApiController>())),
+          BlocProvider<WorkersBloc>(
+              create: (context) =>
+                  WorkersBloc(context.read<CheckoutApiController>())),
           BlocProvider(create: (_) => AppCubit()),
+          BlocProvider(create: (_) => CartCubit()),
           BlocProvider(create: (_) => OrderCubit()),
+          BlocProvider(create: (_) => OrderCubit()),
+          BlocProvider(create: (_) => WorkerTimesCubit()),
         ],
         child: ScreenUtilInit(
             designSize: const Size(428, 926),
@@ -93,11 +102,11 @@ class _MyAppState extends State<MyApp> {
                 debugShowCheckedModeBanner: false,
                 themeMode: ThemeMode.system,
                 theme: MyThemes.lightTheme,
-                // supportedLocales: [
-                //   Locale(AppSharedPref().languageLocale ?? 'ar'),
-                //   // OR Locale('ar', 'AE') OR Other RTL locales
-                // ],
-
+                supportedLocales: [
+                  Locale(AppSharedPref().languageLocale?.toLowerCase() ?? 'ar'),
+                  Locale(AppSharedPref().languageLocale?.toLowerCase() ?? 'he'),
+                  // OR Locale('ar', 'AE') OR Other RTL locales
+                ],
                 locale: Locale(AppSharedPref().languageLocale ?? 'ar'),
                 initialRoute: AppSharedPref().countryId != null &&
                         AppSharedPref().languageLocale != null

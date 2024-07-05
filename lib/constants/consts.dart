@@ -4,7 +4,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 const appName = 'LOGO';
 const appAndroidVersion = '1.0.0';
 const appIosVersion = '1.0.0';
-String appLogoUrl = 'https://svgshare.com/i/170G.svg';
+// String appLogoUrl = 'https://svgshare.com/i/170G.svg';
 String appUrl = 'https://ba.biglike.app/';
 final kDarkBlueColorOpacity = const Color(0xff000000).withOpacity(.07);
 const String kFontFamilyNameHE = 'Noto Kufi Arabic';

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import '../widgets/method_container.dart';
 import 'package:big_like/common_widgets/custom_filed_elevated_btn.dart';
 import 'package:big_like/utils/helpers.dart';
@@ -14,7 +15,9 @@ import '../screens/cards_screen.dart';
 import '../screens/credit_payment_screen.dart';
 
 class SelectPaymentMethod extends StatefulWidget {
-  const SelectPaymentMethod({super.key});
+  const SelectPaymentMethod({super.key, required this.isProducts});
+
+  final bool isProducts;
 
   @override
   State<SelectPaymentMethod> createState() => _SelectPaymentMethodState();
@@ -90,7 +93,8 @@ class _SelectPaymentMethodState extends State<SelectPaymentMethod>
 
       if (context.mounted) {
         orderResponse = await _checkoutApiController.sendUserOrders(
-            order: checkoutBloc.sendOrderModel);
+            order: checkoutBloc.sendOrderModel,
+            isOrderService: !widget.isProducts);
       }
 
       // String message =
@@ -148,9 +152,13 @@ class _SelectPaymentMethodState extends State<SelectPaymentMethod>
           }
         }
       } else {
-        // if (context.mounted) {
-        //   Navigator.pop(context);
-        // }
+        if (mounted) {
+          SchedulerBinding.instance.addPostFrameCallback((_) {
+            Navigator.pop(context);
+            showSnackBar(context,
+                massage: 'نأسف لا يمكن الحجز في هاذا الموعد!!', error: true);
+          });
+        }
       }
     } else {
       if (DateTime.now()

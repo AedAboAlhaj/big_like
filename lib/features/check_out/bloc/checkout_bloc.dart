@@ -12,18 +12,32 @@ part 'checkout_state.dart';
 class CheckoutBloc extends Bloc<CheckoutEvent, CheckoutState> {
   CheckoutBloc(this.checkoutApiController) : super(CheckoutInitial()) {
     on<ScheduleFetched>(_getScheduleList);
-    on<WorkersFetched>(_getWorkersList);
+    // on<WorkersFetched>(_getWorkersList);
   }
 
   SendOrderModel sendOrderModel = SendOrderModel();
   CheckoutApiController checkoutApiController = CheckoutApiController();
+
+  num getTotalPrice() {
+    num total = 0;
+    if (sendOrderModel.products.isEmpty) {
+      total = sendOrderModel.options?.cost ?? 0;
+      return total;
+    } else {
+      for (var element in sendOrderModel.products) {
+        total += element.price;
+      }
+      return total;
+    }
+  }
 
   void _getScheduleList(
       ScheduleFetched event, Emitter<CheckoutState> emit) async {
     emit(ScheduleLoading());
 
     try {
-      final datesList = await checkoutApiController.getSchedule();
+      final datesList =
+          await checkoutApiController.getSchedule(optionId: event.optionId);
 
       emit(ScheduleSuccess(datesList: datesList));
     } catch (e) {
@@ -32,17 +46,17 @@ class CheckoutBloc extends Bloc<CheckoutEvent, CheckoutState> {
     }
   }
 
-  void _getWorkersList(
-      WorkersFetched event, Emitter<CheckoutState> emit) async {
-    emit(ScheduleLoading());
-
-    try {
-      final workersList = await checkoutApiController.getWorkers(
-          date: event.date, startTime: event.startTime, endTime: event.endTime);
-
-      emit(WorkersSuccess(workersList: workersList));
-    } catch (e) {
-      emit(WorkersFailure(e.toString()));
-    }
-  }
+// void _getWorkersList(
+//     WorkersFetched event, Emitter<CheckoutState> emit) async {
+//   emit(WorkersLoading());
+//
+//   try {
+//     final workersList = await checkoutApiController.getWorkers(
+//         date: event.date, startTime: event.time, optionId: event.optionId);
+//
+//     emit(WorkersSuccess(workersList: workersList));
+//   } catch (e) {
+//     emit(WorkersFailure(e.toString()));
+//   }
+// }
 }

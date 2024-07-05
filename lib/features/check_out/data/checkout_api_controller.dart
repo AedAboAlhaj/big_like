@@ -11,11 +11,11 @@ import '../../orders/domain/models/send_order_model.dart';
 import '../domain/models/card_api_model.dart';
 
 class CheckoutApiController {
-  Future<List<DateModel>> getSchedule() async {
+  Future<List<DateModel>> getSchedule({required int optionId}) async {
     final token = await AppSecureStorage().getToken();
 
     var url = Uri.parse(
-        '${ApiSettings.schedule}?country_id=${AppSharedPref().countryId}');
+        '${ApiSettings.schedule}/$optionId?country_id=${AppSharedPref().countryId}');
 
     Map<String, String> headers = {
       'Accept': 'application/json',
@@ -31,7 +31,7 @@ class CheckoutApiController {
     } catch (e) {
       return [];
     }
-
+    print(token);
     if (response.statusCode == 200) {
       var jsonObject = jsonDecode(response.body);
       var productsJsonArray = jsonObject['data'] as List;
@@ -50,10 +50,11 @@ class CheckoutApiController {
     }
   }
 
-  Future<List<WorkerModel>> getWorkers(
-      {required String date,
-      required String startTime,
-      required String endTime}) async {
+  Future<List<WorkerModel>> getWorkers({
+    required String date,
+    required String startTime,
+    required int optionId,
+  }) async {
     final token = await AppSecureStorage().getToken();
 
     var url = Uri.parse(ApiSettings.workers);
@@ -67,7 +68,7 @@ class CheckoutApiController {
       response = await http.post(url,
           headers: headers,
           body: jsonEncode(
-              {"date": date, "start_time": startTime, "end_time": endTime}));
+              {"date": date, "start_time": startTime, "option_id": optionId}));
     } catch (e) {
       return [];
     }
@@ -244,8 +245,14 @@ class CheckoutApiController {
     return [];
   }
 
-  Future<OrderResponse?> sendUserOrders({required SendOrderModel order}) async {
-    var url = Uri.parse(ApiSettings.orders);
+  Future<OrderResponse?> sendUserOrders(
+      {required SendOrderModel order, bool isOrderService = true}) async {
+    Uri url;
+    if (isOrderService) {
+      url = Uri.parse(ApiSettings.ordersService);
+    } else {
+      url = Uri.parse(ApiSettings.ordersProducts);
+    }
     var body = order.toJson();
     var bytes = utf8.encode(json.encode(body));
     final token = await AppSecureStorage().getToken();
@@ -265,9 +272,10 @@ class CheckoutApiController {
     } catch (e) {
       return null;
     }
-
+    print(response.body);
     if (response.statusCode == 200) {
-      return OrderResponse.fromJson(jsonObject['data']);
+      // return OrderResponse.fromJson(jsonObject['data']);
+      return OrderResponse(orderId: '', orderTimeDown: '');
     } else if (response.statusCode != 500) {
       //error msg
       return null;

@@ -5,7 +5,7 @@ import '../../../constants/api_settings.dart';
 import '../domain/models/user_api_model.dart';
 
 class AuthApiController {
-  Future<int?> register({required UserApiModel userApiModel}) async {
+  Future<int?> registerCustomer({required UserApiModel userApiModel}) async {
     // var url = Uri.parse(ApiSettings.REGISTER);
     // var response =
     //     await http.MultipartRequest(url, body: userApiSignUpModel.toJson());
@@ -28,6 +28,7 @@ class AuthApiController {
     var response = await request.send();
     final res = await http.Response.fromStream(response);
     print(ApiSettings.register);
+    print(request.fields);
     print(res.body);
     if (res.statusCode == 200) {
       var jsonObject = jsonDecode(res.body);

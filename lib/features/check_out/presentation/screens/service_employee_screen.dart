@@ -1,4 +1,5 @@
 import 'package:big_like/features/check_out/bloc/checkout_bloc.dart';
+import 'package:big_like/features/check_out/bloc/workers_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -27,21 +28,21 @@ class _ServiceEmployeeScreenState extends State<ServiceEmployeeScreen> {
     // TODO: implement initState
     super.initState();
     checkoutBloc = BlocProvider.of<CheckoutBloc>(context);
-    context.read<CheckoutBloc>().add(WorkersFetched(
+    context.read<WorkersBloc>().add(WorkersFetched(
         date: checkoutBloc.sendOrderModel.date ?? "",
-        endTime: checkoutBloc.sendOrderModel.endTime ?? "",
-        startTime: checkoutBloc.sendOrderModel.startTime ?? ""));
+        time: checkoutBloc.sendOrderModel.time ?? "",
+        optionId: checkoutBloc.sendOrderModel.options?.id ?? 0));
   }
 
   @override
   Widget build(BuildContext context) {
     return ModelScreen(
         screenTitle: '',
-        bodyWidget: BlocConsumer<CheckoutBloc, CheckoutState>(
+        bodyWidget: BlocConsumer<WorkersBloc, WorkersState>(
           listener: (context, state) {
             // TODO: implement listener
           },
-          builder: (context, CheckoutState state) {
+          builder: (context, WorkersState state) {
             if (state is WorkersFailure) {
               return Center(
                 child: Text(state.error),
@@ -51,11 +52,11 @@ class _ServiceEmployeeScreenState extends State<ServiceEmployeeScreen> {
               return const CustomLoadingIndicator();
             }
 
-            return BlocConsumer<CheckoutBloc, CheckoutState>(
+            return BlocConsumer<WorkersBloc, WorkersState>(
               listener: (context, state) {
                 // TODO: implement listener
               },
-              builder: (context, CheckoutState state) {
+              builder: (context, WorkersState state) {
                 if (state is WorkersFailure) {
                   return Center(
                     child: Text(state.error),

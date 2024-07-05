@@ -28,7 +28,7 @@ class ServiceModel {
   ServiceModel({
     required this.id,
     required this.name,
-    required this.images,
+    required this.image,
     required this.cover,
     required this.countries,
     required this.options,
@@ -37,19 +37,17 @@ class ServiceModel {
 
   late final int id;
   late final String name;
-  late final Images images;
+  late final String image;
   late final String cover;
   late final String? description;
   late final List<Countries> countries;
   late final List<Options> options;
 
   ServiceModel.fromJson(Map<String, dynamic> json) {
-    id = json['id'];
+    id = json['id'] ?? 2;
     name = json['name'];
     description = json['description'];
-    images = json['images'] != null
-        ? Images.fromJson(json['images'])
-        : Images(he: '');
+    image = json['image'] ?? '';
     cover = json['cover'] ?? '';
     countries = json['countries'] != null
         ? List.from(json['countries'])
@@ -65,28 +63,10 @@ class ServiceModel {
     final data = <String, dynamic>{};
     data['id'] = id;
     data['name'] = name;
-    data['images'] = images;
+    data['images'] = image;
     data['cover'] = cover;
     data['countries'] = countries.map((e) => e.toJson()).toList();
     data['options'] = options.map((e) => e.toJson()).toList();
-    return data;
-  }
-}
-
-class Images {
-  Images({
-    required this.he,
-  });
-
-  late final String he;
-
-  Images.fromJson(Map<String, dynamic> json) {
-    he = json['HE'] ?? json['AR'];
-  }
-
-  Map<String, dynamic> toJson() {
-    final data = <String, dynamic>{};
-    data['HE'] = he;
     return data;
   }
 }
@@ -157,11 +137,11 @@ class Options {
   late final String fullDesc;
   late final num cost;
   late final num hours;
-  late final num discount;
+  late final num? discount;
   bool isSelected = false;
 
   Options.fromJson(Map<String, dynamic> json) {
-    id = json['id'] ?? 0;
+    id = json['id'] ?? 2;
     name = json['name'];
     desc = json['desc'];
     fullDesc = json['full_desc'];
@@ -171,13 +151,13 @@ class Options {
   }
 
   Map<String, dynamic> toJson() {
-    final _data = <String, dynamic>{};
-    _data['name'] = name;
-    _data['desc'] = desc;
-    _data['full_desc'] = fullDesc;
-    _data['cost'] = cost;
-    _data['hours'] = hours;
-    _data['discount'] = discount;
-    return _data;
+    final data = <String, dynamic>{};
+    data['name'] = name;
+    data['desc'] = desc;
+    data['full_desc'] = fullDesc;
+    data['cost'] = cost;
+    data['hours'] = hours;
+    data['discount'] = discount;
+    return data;
   }
 }

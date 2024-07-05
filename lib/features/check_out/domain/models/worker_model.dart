@@ -11,8 +11,8 @@ class WorkerModel {
   late final int id;
   late final String name;
   late final String phone;
-  late final String address;
-  late final String photo;
+  late final String? address;
+  late final String? photo;
   late final Null coordinates;
 
   WorkerModel.fromJson(Map<String, dynamic> json) {

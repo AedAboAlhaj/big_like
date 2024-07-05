@@ -1,4 +1,7 @@
 import 'package:big_like/common_widgets/custom_filed_elevated_btn.dart';
+import 'package:big_like/features/orders/presentation/widgets/order_product_card.dart';
+import 'package:big_like/features/services/domain/models/service_model.dart';
+import 'package:big_like/features/services/domain/models/service_order_model.dart';
 import 'package:easy_stepper/easy_stepper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -35,12 +38,22 @@ class _OrderCardState extends State<OrderCard> {
     };
   }
 
+  num getTotalOrderPrice() {
+    if (widget.orderApiModel.productsInfo != null) {
+      return (widget.orderApiModel.productsInfo?.deliveryCost ?? 0) +
+          widget.orderApiModel.total;
+    } else {
+      return widget.orderApiModel.total;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 440,
+      // height: 440,
       width: double.infinity,
       margin: EdgeInsets.only(bottom: 20.h),
+      padding: EdgeInsets.all(20.h),
       decoration: BoxDecoration(
           color: Colors.grey.shade200, borderRadius: BorderRadius.circular(8)),
       child: Column(
@@ -51,20 +64,26 @@ class _OrderCardState extends State<OrderCard> {
               SizedBox(
                 height: 15.h,
               ),
-              const Text(
-                '13:30',
-                style: TextStyle(fontSize: 35, fontWeight: FontWeight.w900),
-              ),
-              Text(
-                'يوم الاحد 05.06',
-                style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.w900),
-              ),
-              Text(
-                '3 ساعات',
-                style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.w900),
-              ),
+              widget.orderApiModel.service != null
+                  ? ServiceInfo(
+                      serviceOrderModel: widget.orderApiModel.service!)
+                  : ListView.separated(
+                      shrinkWrap: true,
+                      physics: const NeverScrollableScrollPhysics(),
+                      padding: EdgeInsets.zero,
+                      itemBuilder: (context, index) {
+                        return OrderProductCard(
+                          product: widget.orderApiModel.products[index],
+                        );
+                      },
+                      separatorBuilder: (context, index) {
+                        return const Divider(
+                          color: kDarkGrayColor,
+                        );
+                      },
+                      itemCount: widget.orderApiModel.products.length),
               SizedBox(
-                height: 10.h,
+                height: 22.h,
               ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -75,26 +94,38 @@ class _OrderCardState extends State<OrderCard> {
                       Text(
                         'رقم الطلب',
                         style: TextStyle(
-                          fontSize: 14.sp,
-                        ),
+                            fontSize: 16.sp, fontWeight: FontWeight.w500),
                       ),
                       SizedBox(
-                        height: 8.h,
+                        height: 13.h,
                       ),
                       Text(
                         'طريقة الدفع',
                         style: TextStyle(
-                          fontSize: 14.sp,
-                        ),
+                            fontSize: 16.sp, fontWeight: FontWeight.w500),
                       ),
                       SizedBox(
-                        height: 8.h,
+                        height: 13.h,
+                      ),
+                      Visibility(
+                        visible: widget.orderApiModel.productsInfo != null,
+                        child: Column(
+                          children: [
+                            Text(
+                              'تكلفة التوصيل',
+                              style: TextStyle(
+                                  fontSize: 16.sp, fontWeight: FontWeight.w500),
+                            ),
+                            SizedBox(
+                              height: 13.h,
+                            ),
+                          ],
+                        ),
                       ),
                       Text(
                         'الاجمالي',
                         style: TextStyle(
-                          fontSize: 14.sp,
-                        ),
+                            fontSize: 16.sp, fontWeight: FontWeight.w500),
                       ),
                     ],
                   ),
@@ -104,25 +135,41 @@ class _OrderCardState extends State<OrderCard> {
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Text(
-                        '#23233',
-                        style: TextStyle(fontWeight: FontWeight.w900),
+                      Text(
+                        '#${widget.orderApiModel.id}',
+                        style: TextStyle(
+                            fontWeight: FontWeight.w700, fontSize: 16.sp),
                       ),
                       SizedBox(
-                        height: 8.h,
+                        height: 13.h,
                       ),
                       Text(
-                        'فيزا',
+                        widget.orderApiModel.paymentMethod,
                         style: TextStyle(
-                          fontSize: 14.sp,
-                        ),
+                            fontWeight: FontWeight.w700, fontSize: 16.sp),
                       ),
                       SizedBox(
-                        height: 8.h,
+                        height: 13.h,
                       ),
-                      const Text(
-                        '673',
-                        style: TextStyle(fontWeight: FontWeight.w900),
+                      Visibility(
+                        visible: widget.orderApiModel.productsInfo != null,
+                        child: Column(
+                          children: [
+                            Text(
+                              '${widget.orderApiModel.productsInfo?.deliveryCost} ₪',
+                              style: TextStyle(
+                                  fontSize: 16.sp, fontWeight: FontWeight.w700),
+                            ),
+                            SizedBox(
+                              height: 13.h,
+                            ),
+                          ],
+                        ),
+                      ),
+                      Text(
+                        '${getTotalOrderPrice()} ₪',
+                        style: TextStyle(
+                            fontWeight: FontWeight.w700, fontSize: 16.sp),
                       ),
                     ],
                   ),
@@ -134,25 +181,31 @@ class _OrderCardState extends State<OrderCard> {
             ],
           ),
           EasyStepper(
-            activeStep: 2,
+            activeStep: widget.orderApiModel.pendingTime != null
+                ? 1
+                : widget.orderApiModel.onWayTime != null
+                    ? 2
+                    : widget.orderApiModel.doneTime != null
+                        ? 3
+                        : 0,
             internalPadding: 0.w,
             showLoadingAnimation: false,
             stepRadius: 18.r,
             showStepBorder: true,
             defaultStepBorderType: BorderType.normal,
-            unreachedStepBorderColor: Colors.black,
+            unreachedStepBorderColor: kPrimaryColor,
             activeStepBorderColor: kPrimaryColor,
             finishedStepBackgroundColor: kPrimaryColor,
             unreachedStepTextColor: Colors.white,
             lineStyle: LineStyle(
                 lineLength: 60,
                 lineType: LineType.normal,
-                finishedLineColor: kPrimaryColor,
-                defaultLineColor: Colors.black,
+                defaultLineColor: kPrimaryColor,
                 lineThickness: 1.5.h),
             borderThickness: 4.w,
             steps: [
               EasyStep(
+                enabled: widget.orderApiModel.pendingTime != null,
                 customStep: Text(
                   '1',
                   style: TextStyle(
@@ -165,67 +218,81 @@ class _OrderCardState extends State<OrderCard> {
                       fontFamily: '',
                       fontWeight: FontWeight.w900),
                 ),
-                customTitle: const Column(
+                customTitle: Column(
                   children: [
-                    Text('بالانتظار',
+                    Text(
+                      'بالانتظار',
+                      style: TextStyle(
+                          fontSize: 14.sp, fontWeight: FontWeight.w700),
+                    ),
+                    SizedBox(
+                      height: 2.h,
+                    ),
+                    Text(Utils.formatDateTime(widget.orderApiModel.pendingTime),
+                        textAlign: TextAlign.center,
                         style: TextStyle(
-                            fontSize: 11, fontWeight: FontWeight.w500)),
-                    Text('15.03.24',
-                        style: TextStyle(
-                            fontSize: 11, fontWeight: FontWeight.w500)),
+                          fontSize: 12.sp,
+                        )),
                   ],
                 ),
               ),
               EasyStep(
+                  enabled: widget.orderApiModel.onWayTime != null,
                   customStep: Text(
                     '2',
                     style: TextStyle(
-                        color: 2 < 1
+                        color: widget.orderApiModel.onWayTime != null
                             ? Colors.black
-                            : 2 == 1
-                                ? kPrimaryColor
-                                : Colors.white,
+                            : kPrimaryColor,
                         fontSize: 17.sp,
-                        fontFamily: '',
                         fontWeight: FontWeight.w900),
                   ),
-                  customTitle: const Column(
+                  customTitle: Column(
                     children: [
                       Text(
-                        'الموعد',
+                        'ع طريق',
                         style: TextStyle(
-                            fontSize: 11, fontWeight: FontWeight.w500),
+                            fontSize: 14.sp, fontWeight: FontWeight.w700),
                       ),
-                      Text(
-                        '16.03.24',
-                        style: TextStyle(
-                            fontSize: 11, fontWeight: FontWeight.w500),
+                      SizedBox(
+                        height: 2.h,
                       ),
-                      Text(
-                        '11:00',
-                        style: TextStyle(
-                            fontSize: 11, fontWeight: FontWeight.w500),
-                      ),
+                      Text(Utils.formatDateTime(widget.orderApiModel.onWayTime),
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            fontSize: 12.sp,
+                          )),
                     ],
                   )),
               EasyStep(
+                  enabled: widget.orderApiModel.doneTime != null,
                   customStep: Text(
                     '3',
                     style: TextStyle(
-                        color: 2 < 2
-                            ? Colors.black
-                            : 2 == 2
-                                ? kPrimaryColor
-                                : Colors.white,
+                        color: widget.orderApiModel.doneTime != null
+                            ? Colors.white
+                            : kPrimaryColor,
                         fontSize: 17.sp,
-                        fontFamily: '',
                         fontWeight: FontWeight.w900),
                   ),
-                  customTitle: const Center(
-                    child: Text(
-                      'انتهاء',
-                      style:
-                          TextStyle(fontSize: 11, fontWeight: FontWeight.w500),
+                  customTitle: Center(
+                    child: Column(
+                      children: [
+                        Text(
+                          'انتهاء',
+                          style: TextStyle(
+                              fontSize: 14.sp, fontWeight: FontWeight.w700),
+                        ),
+                        SizedBox(
+                          height: 2.h,
+                        ),
+                        Text(
+                            Utils.formatDateTime(widget.orderApiModel.doneTime),
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              fontSize: 12.sp,
+                            )),
+                      ],
                     ),
                   )),
             ],
@@ -240,6 +307,41 @@ class _OrderCardState extends State<OrderCard> {
                   CustomFiledElevatedBtn(function: () {}, text: 'تفاصيل الطلب'))
         ],
       ),
+    );
+  }
+}
+
+class ServiceInfo extends StatelessWidget {
+  const ServiceInfo({
+    super.key,
+    required this.serviceOrderModel,
+  });
+
+  final ServiceOrderModel serviceOrderModel;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        Text(
+          Utils.stringToTimeOfDay(serviceOrderModel.startTime).format(context),
+          style: const TextStyle(fontSize: 35, fontWeight: FontWeight.w900),
+        ),
+        SizedBox(
+          height: 3.h,
+        ),
+        Text(
+          Utils.formatDateString(serviceOrderModel.date),
+          style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.w900),
+        ),
+        SizedBox(
+          height: 3.h,
+        ),
+        Text(
+          serviceOrderModel.option,
+          style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.w900),
+        ),
+      ],
     );
   }
 }

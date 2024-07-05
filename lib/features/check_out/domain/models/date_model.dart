@@ -16,36 +16,29 @@ class DateModel {
   }
 
   Map<String, dynamic> toJson() {
-    final _data = <String, dynamic>{};
-    _data['day'] = day;
-    _data['date'] = date;
-    _data['times'] = times.map((e) => e.toJson()).toList();
-    return _data;
+    final data = <String, dynamic>{};
+    data['day'] = day;
+    data['date'] = date;
+    data['times'] = times.map((e) => e.toJson()).toList();
+    return data;
   }
 }
 
 class Times {
   Times({
-    required this.startTime,
-    required this.endTime,
-    required this.isDate,
+    required this.time,
   });
 
-  late final String startTime;
-  late final String endTime;
-  late final bool isDate;
+  late final String time;
 
   Times.fromJson(Map<String, dynamic> json) {
-    startTime = json['start_time'];
-    endTime = json['end_time'];
-    isDate = json['is_date'];
+    time = json['time'];
   }
 
   Map<String, dynamic> toJson() {
-    final _data = <String, dynamic>{};
-    _data['start_time'] = startTime;
-    _data['end_time'] = endTime;
-    _data['is_date'] = isDate;
-    return _data;
+    final data = <String, dynamic>{};
+    data['time'] = time;
+
+    return data;
   }
 }

@@ -36,11 +36,11 @@ class AppSharedPref {
   String? get languageLocale =>
       _sharedPreferences.getString('languageLocale') ?? 'ar';
 
-  ///PHONE///
-  Future savePhoneNum({required String phoneNum}) async =>
-      await _sharedPreferences.setString('phoneNum', phoneNum);
+  ///USER TYPE///
+  Future saveUserType({required String userType}) async =>
+      await _sharedPreferences.setString('userType', userType);
 
-  String get phoneNum => _sharedPreferences.getString('phoneNum') ?? '';
+  String get userType => _sharedPreferences.getString('userType') ?? '';
 
   ///order///
   Future saveOrderId({required String orderId}) async =>

@@ -3,6 +3,7 @@ import 'package:big_like/local_storage/shared_preferences.dart';
 
 import 'name_api_model.dart';
 
+/*
 class ProductApiModel {
   ProductApiModel(
       {required this.id,
@@ -138,6 +139,7 @@ class ProductApiModel {
     return data;
   }
 }
+*/
 
 class Sections {
   Sections({
@@ -542,70 +544,71 @@ class ProductX {
   }
 }
 
-class ProductDisplayApiModel {
-  ProductDisplayApiModel({
-    required this.id,
-    required this.name,
-    required this.status,
-    required this.weight,
-    required this.img,
-    required this.storage,
-    this.sectionsIds = const [],
-    required this.weightDescriotion,
-    // required this.quantity
-  });
+// class ProductDisplayApiModel {
+//   ProductDisplayApiModel({
+//     required this.id,
+//     required this.name,
+//     required this.status,
+//     required this.weight,
+//     required this.img,
+//     required this.storage,
+//     this.sectionsIds = const [],
+//     required this.weightDescriotion,
+//     // required this.quantity
+//   });
+//
+//   late final int id;
+//   late final Name name;
+//   late final bool status;
+//   late final Weight weight;
+//   late final String img;
+//   late final Storage storage;
+//   late List<int> sectionsIds;
+//   late final WeightDescriotion weightDescriotion;
+//   late final ProductDisplayApiModel? friendProduct;
+//   late final bool hasCondition;
+//   late final int? maximumSell;
+//
+//   // late int quantity;
+//
+//   ProductDisplayApiModel.fromJson(Map<String, dynamic> json) {
+//     id = json['id'];
+//     var thirdMap = <String, dynamic>{};
+//
+//     for (var element in List.from(json['name'])) {
+//       thirdMap.addAll(element);
+//     }
+//     name = thirdMap.isEmpty ? Name(ar: '', he: '') : Name.fromJson(thirdMap);
+//     status = json['status'];
+//     sectionsIds = json['sections_ids'] != null
+//         ? List<int>.from(json['sections_ids'])
+//         : [];
+//     weight = Weight.fromJson(json['weight']);
+//     img = json['img'] ?? '';
+//
+//     weightDescriotion = WeightDescriotion.fromJson(json['weight_descriotion']);
+//     friendProduct = json['friend_product'] != null
+//         ? ProductDisplayApiModel.fromJson(json['friend_product'])
+//         : null;
+//     hasCondition = json['has_condition'] ?? false;
+//     maximumSell = json['maximum_sell'];
+//     storage = Storage.fromJson(json['storage'], maximumSell);
+//     // quantity = json['quantity'] ?? 5;
+//   }
+//
+//   Map<String, dynamic> toJson() {
+//     final data = <String, dynamic>{};
+//     data['id'] = id;
+//     data['name'] = name;
+//     data['status'] = status;
+//     data['weight'] = weight.toJson();
+//     data['img'] = img;
+//     data['storage'] = storage.toJson();
+//     return data;
+//   }
+// }
 
-  late final int id;
-  late final Name name;
-  late final bool status;
-  late final Weight weight;
-  late final String img;
-  late final Storage storage;
-  late List<int> sectionsIds;
-  late final WeightDescriotion weightDescriotion;
-  late final ProductDisplayApiModel? friendProduct;
-  late final bool hasCondition;
-  late final int? maximumSell;
-
-  // late int quantity;
-
-  ProductDisplayApiModel.fromJson(Map<String, dynamic> json) {
-    id = json['id'];
-    var thirdMap = <String, dynamic>{};
-
-    for (var element in List.from(json['name'])) {
-      thirdMap.addAll(element);
-    }
-    name = thirdMap.isEmpty ? Name(ar: '', he: '') : Name.fromJson(thirdMap);
-    status = json['status'];
-    sectionsIds = json['sections_ids'] != null
-        ? List<int>.from(json['sections_ids'])
-        : [];
-    weight = Weight.fromJson(json['weight']);
-    img = json['img'] ?? '';
-
-    weightDescriotion = WeightDescriotion.fromJson(json['weight_descriotion']);
-    friendProduct = json['friend_product'] != null
-        ? ProductDisplayApiModel.fromJson(json['friend_product'])
-        : null;
-    hasCondition = json['has_condition'] ?? false;
-    maximumSell = json['maximum_sell'];
-    storage = Storage.fromJson(json['storage'], maximumSell);
-    // quantity = json['quantity'] ?? 5;
-  }
-
-  Map<String, dynamic> toJson() {
-    final data = <String, dynamic>{};
-    data['id'] = id;
-    data['name'] = name;
-    data['status'] = status;
-    data['weight'] = weight.toJson();
-    data['img'] = img;
-    data['storage'] = storage.toJson();
-    return data;
-  }
-}
-
+/*
 class RecipeProductDisplayApiModel {
   RecipeProductDisplayApiModel({
     required this.quantityNeeded,
@@ -622,6 +625,7 @@ class RecipeProductDisplayApiModel {
     product = ProductDisplayApiModel.fromJson(json['product']);
   }
 }
+*/
 
 class ProductOrderApiModel {
   ProductOrderApiModel(

@@ -41,12 +41,10 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
             onTap: () {},
             child: SizedBox(
               width: 80,
-              child: SvgPicture.network(
-                appLogoUrl,
-                fit: BoxFit.contain,
-                /* colorFilter: Utils.svgColor(Theme.of(context)
-                          .primaryColor)*/
-              ), /*Image.network(
+              child: SvgPicture.asset('assets/images/app_logo.svg',
+                  fit: BoxFit.contain,
+                  colorFilter: Utils.svgColor(Theme.of(context)
+                      .primaryColor)), /*Image.network(
                     appLogoUrl,
                     fit: BoxFit.contain,
                     errorBuilder: (BuildContext context, Object exception,

@@ -25,18 +25,3 @@ final class ScheduleFailure extends CheckoutState {
 
 ///
 ///
-final class WorkersInitial extends CheckoutState {}
-
-final class WorkersLoading extends CheckoutState {}
-
-final class WorkersSuccess extends CheckoutState {
-  final List<WorkerModel> workersList;
-
-  WorkersSuccess({required this.workersList});
-}
-
-final class WorkersFailure extends CheckoutState {
-  final String error;
-
-  WorkersFailure(this.error);
-}

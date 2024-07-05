@@ -8,9 +8,11 @@ class ServiceOptionCard extends StatefulWidget {
   const ServiceOptionCard({
     super.key,
     required this.options,
+    required this.function,
   });
 
   final Options options;
+  final VoidCallback function;
 
   @override
   State<ServiceOptionCard> createState() => _SidesCardState();
@@ -65,9 +67,10 @@ class _SidesCardState extends State<ServiceOptionCard>
             widget.options.isSelected
                 ? _animationController.reverse()
                 : _animationController.forward();
-            setState(() {
-              widget.options.isSelected = true;
-            });
+            // setState(() {
+            //   widget.options.isSelected = !widget.options.isSelected;
+            // });
+            widget.function();
           },
           splashColor: Colors.transparent,
           child: Row(

@@ -2,7 +2,9 @@ import 'dart:async';
 import 'dart:io';
 import 'package:big_like/features/achievements/presentation/screens/achievements_screen.dart';
 import 'package:big_like/features/home/blocs/app_cubit.dart';
+import 'package:big_like/features/worker_times/presentation/screens/worker_times_screen.dart';
 import 'package:big_like/local_storage/secure_storage.dart';
+import 'package:big_like/local_storage/shared_preferences.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -15,6 +17,7 @@ import '../../../../utils/utils.dart';
 import '../../../auth/presentation/screens/auth_phone_number_screen.dart';
 import '../../../orders/presentation/screens/orders_screen.dart';
 import '../../../settings/presentation/screens/settings_screen.dart';
+import '../../../worker_orders/presentation/screens/worker_orders_screen.dart';
 import 'home_screen.dart';
 
 class MainScreen extends StatefulWidget {
@@ -32,12 +35,7 @@ class _MainScreenState extends State<MainScreen> {
     super.dispose();
   }
 
-  static const List<Widget> _widgetOptions = <Widget>[
-    HomeScreen(),
-    OrdersScreen(),
-    AchievementsScreen(),
-    SettingsScreen()
-  ];
+  static late List<Widget> _widgetOptions;
   late final AppCubit appCubit;
 
   @override
@@ -45,6 +43,20 @@ class _MainScreenState extends State<MainScreen> {
     // TODO: implement initState
     super.initState();
     appCubit = BlocProvider.of<AppCubit>(context);
+    if (AppSharedPref().userType == 'customer') {
+      _widgetOptions = const <Widget>[
+        HomeScreen(),
+        OrdersScreen(),
+        AchievementsScreen(),
+        SettingsScreen()
+      ];
+    } else {
+      _widgetOptions = const <Widget>[
+        WorkerOrdersScreen(),
+        WorkerTimesScreen(),
+        SettingsScreen()
+      ];
+    }
   }
 
   @override
@@ -64,17 +76,18 @@ class _MainScreenState extends State<MainScreen> {
                 titleSpacing: 0,
                 centerTitle: true,
                 title: SizedBox(
-                  width: 100,
-                  child: SvgPicture.network(
-                    appLogoUrl,
+                  width: 80,
+                  child: SvgPicture.asset(
+                    'assets/images/app_logo.svg',
                     fit: BoxFit.contain,
+                    colorFilter: Utils.svgColor(kPrimaryColor),
                   ),
                 ),
               ))),
-      body: BlocBuilder<AppCubit, int>(
-        builder: (context, screenIndex) {
-          return CupertinoPageScaffold(child: _widgetOptions[screenIndex]);
-        },
+      body: CupertinoPageScaffold(
+        child: BlocBuilder<AppCubit, int>(builder: (context, screenIndex) {
+          return _widgetOptions[screenIndex];
+        }),
       ),
       bottomNavigationBar: Container(
         height: 105.h,
@@ -94,64 +107,110 @@ class _MainScreenState extends State<MainScreen> {
         child: Row(
             crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: [
-              BottomNavigationBarIcon(
-                title: 'الرئيسية',
-                imageUrl: 'assets/images/svgIcons/home_icon.svg',
-                pageNumber: 0,
-                function: () async {
-                  context
-                      .read<AppCubit>()
-                      .updateScreen(screenName: 'HomeScreen', screenNum: 0);
-                },
-                screenText: 'HomeScreen',
-              ),
-              BottomNavigationBarIcon(
-                title: 'الطلبات',
-                imageUrl: 'assets/images/svgIcons/orders_icon.svg',
-                pageNumber: 1,
-                function: () async {
-                  final token = await AppSecureStorage().getToken();
-                  if (context.mounted) {
-                    if (token == null) {
-                      showCupertinoModalBottomSheet(
-                        expand: false,
-                        context: context,
-                        backgroundColor: Colors.transparent,
-                        builder: (context) => const AuthPhoneNumScreen(),
-                      );
-                    } else {
-                      context.read<AppCubit>().updateScreen(
-                          screenName: 'OrdersScreen', screenNum: 1);
-                    }
-                  }
-                },
-                screenText: 'OrdersScreen',
-              ),
-              BottomNavigationBarIcon(
-                title: 'إنجزاتي',
-                imageUrl: 'assets/images/svgIcons/like_icon.svg',
-                pageNumber: 2,
-                screenText: 'AchievementsScreen',
-                function: () {
-                  context.read<AppCubit>().updateScreen(
-                      screenName: 'AchievementsScreen', screenNum: 2);
-                },
-              ),
-              BottomNavigationBarIcon(
-                title: 'الإعدادات',
-                imageUrl: 'assets/images/svgIcons/settings_icon.svg',
-                pageNumber: 3,
-                function: () {
-                  context
-                      .read<AppCubit>()
-                      .updateScreen(screenName: 'SettingsScreen', screenNum: 3);
-                },
-                screenText: 'SettingsScreen',
-              ),
-            ]),
+            children: AppSharedPref().userType == 'customer'
+                ? customerNavigationBarIcons(context)
+                : workersNavigationBarIcons(context)),
       ),
     );
+  }
+
+  List<Widget> workersNavigationBarIcons(BuildContext context) {
+    return [
+      BottomNavigationBarIcon(
+        title: 'طلباتي',
+        imageUrl: 'assets/images/svgIcons/orders_icon.svg',
+        pageNumber: 0,
+        function: () async {
+          context
+              .read<AppCubit>()
+              .updateScreen(screenName: 'WorkerOrdersScreen', screenNum: 0);
+        },
+        screenText: 'HomeScreen',
+      ),
+      BottomNavigationBarIcon(
+        title: 'دوامي',
+        imageUrl: 'assets/images/svgIcons/note_icon.svg',
+        pageNumber: 1,
+        function: () {
+          context
+              .read<AppCubit>()
+              .updateScreen(screenName: 'WorkerTimesScreen', screenNum: 1);
+        },
+        screenText: 'OrdersScreen',
+      ),
+      BottomNavigationBarIcon(
+        title: 'الإعدادات',
+        imageUrl: 'assets/images/svgIcons/settings_icon.svg',
+        pageNumber: 2,
+        function: () {
+          context
+              .read<AppCubit>()
+              .updateScreen(screenName: 'SettingsScreen', screenNum: 2);
+        },
+        screenText: 'SettingsScreen',
+      ),
+    ];
+  }
+
+  List<Widget> customerNavigationBarIcons(BuildContext context) {
+    return [
+      BottomNavigationBarIcon(
+        title: 'الرئيسية',
+        imageUrl: 'assets/images/svgIcons/home_icon.svg',
+        pageNumber: 0,
+        function: () async {
+          context
+              .read<AppCubit>()
+              .updateScreen(screenName: 'HomeScreen', screenNum: 0);
+        },
+        screenText: 'HomeScreen',
+      ),
+      BottomNavigationBarIcon(
+        title: 'الطلبات',
+        imageUrl: 'assets/images/svgIcons/orders_icon.svg',
+        pageNumber: 1,
+        function: () async {
+          final token = await AppSecureStorage().getToken();
+          if (context.mounted) {
+            if (token == null) {
+              showCupertinoModalBottomSheet(
+                expand: false,
+                context: context,
+                backgroundColor: Colors.transparent,
+                builder: (context) => const AuthPhoneNumScreen(),
+              );
+            } else {
+              context
+                  .read<AppCubit>()
+                  .updateScreen(screenName: 'OrdersScreen', screenNum: 1);
+            }
+          }
+        },
+        screenText: 'OrdersScreen',
+      ),
+      BottomNavigationBarIcon(
+        title: 'بروفايل',
+        imageUrl: 'assets/images/svgIcons/like_icon.svg',
+        pageNumber: 2,
+        screenText: 'AchievementsScreen',
+        function: () {
+          context
+              .read<AppCubit>()
+              .updateScreen(screenName: 'AchievementsScreen', screenNum: 2);
+        },
+      ),
+      BottomNavigationBarIcon(
+        title: 'الإعدادات',
+        imageUrl: 'assets/images/svgIcons/settings_icon.svg',
+        pageNumber: 3,
+        function: () {
+          context
+              .read<AppCubit>()
+              .updateScreen(screenName: 'SettingsScreen', screenNum: 3);
+        },
+        screenText: 'SettingsScreen',
+      ),
+    ];
   }
 }
 

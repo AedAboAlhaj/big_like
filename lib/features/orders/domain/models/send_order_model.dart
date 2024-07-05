@@ -1,11 +1,14 @@
+import 'package:big_like/features/products/domain/models/products_api_model.dart';
 import 'package:big_like/features/services/domain/models/service_model.dart';
+import 'package:big_like/local_storage/shared_preferences.dart';
 
 class SendOrderModel {
   SendOrderModel();
 
   int? workerId;
-  String? startTime;
-  String? endTime;
+  String? time;
+
+  // String? endTime;
   String? date;
   Options? options;
   String? paymentMethod;
@@ -13,6 +16,7 @@ class SendOrderModel {
   String? address;
   String? note;
   String? coupon;
+  List<ProductApiModel> products = [];
 
 /*
   SendOrderModel.fromJson(Map<String, dynamic> json){
@@ -31,15 +35,16 @@ class SendOrderModel {
   Map<String, dynamic> toJson() {
     final _data = <String, dynamic>{};
     _data['worker_id'] = workerId;
-    _data['start_time'] = startTime;
-    _data['end_time'] = endTime;
+    _data['time'] = time;
+    // _data['end_time'] = endTime;
     _data['date'] = date;
     _data['option_id'] = options?.id;
-    _data['payment_method'] = paymentMethod;
-    _data['city_id'] = cityId;
+    _data['payment_method'] = paymentMethod == 'cash' ? 0 : 1;
+    _data['city_id'] = AppSharedPref().countryId;
     _data['address'] = address;
     _data['note'] = note;
     _data['coupon'] = coupon;
+    _data['products'] = products.map((e) => e.toJson()).toList();
     return _data;
   }
 }

@@ -1,12 +1,10 @@
 import 'dart:ui';
-
 import 'package:big_like/features/check_out/bloc/checkout_bloc.dart';
 import 'package:big_like/features/check_out/presentation/screens/select_payment_method.dart';
 import 'package:big_like/utils/helpers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-
 import '../../../../common_widgets/custom_filed_elevated_btn.dart';
 import '../../../../local_storage/shared_preferences.dart';
 import '../../../auth/presentation/screens/auth_model_screen.dart';
@@ -14,13 +12,15 @@ import '../widgets/clicked_container.dart';
 import 'package:intl/intl.dart';
 
 class OrderDetailsScreen extends StatefulWidget {
-  const OrderDetailsScreen({super.key});
+  const OrderDetailsScreen({super.key, this.isProducts = false});
+
+  final bool isProducts;
 
   @override
   State<OrderDetailsScreen> createState() => _OrderDetailsScreenState();
 }
 
-class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
+class _OrderDetailsScreenState extends State<OrderDetailsScreen> with Helpers {
   late final CheckoutBloc checkoutBloc;
   late final TextEditingController noteTextEditingController;
   late final TextEditingController addressTextEditingController;
@@ -66,25 +66,31 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
                 Text(
                   'تفاصيل الطلب',
                   style:
-                  TextStyle(fontSize: 18.sp, fontWeight: FontWeight.w700),
+                      TextStyle(fontSize: 18.sp, fontWeight: FontWeight.w700),
                 ),
                 SizedBox(
                   height: 47.h,
                 ),
-                Text(
-                  '${checkoutBloc.sendOrderModel.startTime} -> ${checkoutBloc
-                      .sendOrderModel.endTime}',
-                  style:
-                  TextStyle(fontWeight: FontWeight.w900, fontSize: 30.sp),
-                ),
+                checkoutBloc.sendOrderModel.products.isEmpty
+                    ? Visibility(
+                        visible: checkoutBloc.sendOrderModel.products.isEmpty,
+                        child: Text(
+                          '${checkoutBloc.sendOrderModel.time}',
+                          style: TextStyle(
+                              fontWeight: FontWeight.w900, fontSize: 30.sp),
+                        ),
+                      )
+                    : const SizedBox(),
                 const SizedBox(
                   height: 4,
                 ),
-                Text(
-                    'يوم ${DateFormat.EEEE(AppSharedPref().languageLocale)
-                        .format(DateFormat("yyyy-MM-DD").parse(
-                        checkoutBloc.sendOrderModel.date ?? ''))} ${checkoutBloc
-                        .sendOrderModel.startTime}'),
+                checkoutBloc.sendOrderModel.products.isEmpty
+                    ? Visibility(
+                        visible: checkoutBloc.sendOrderModel.products.isEmpty,
+                        child: Text(
+                            'يوم ${DateFormat.EEEE(AppSharedPref().languageLocale).format(DateFormat("yyyy-MM-DD").parse(checkoutBloc.sendOrderModel.date ?? ''))} ${checkoutBloc.sendOrderModel.time}'),
+                      )
+                    : SizedBox(),
                 // Text('3 ساعات'),
                 SizedBox(
                   height: 30.h,
@@ -97,11 +103,13 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
                         content: 'قم بادخال العنوان رجاءا',
                         hintText: 'العنوان..',
                         controller: addressTextEditingController,
+                        iconUrl: 'assets/images/svgIcons/location_pin.svg',
                         function: () {
                           setState(() {
                             checkoutBloc.sendOrderModel.address =
                                 addressTextEditingController.text.trim();
                           });
+                          Navigator.pop(context);
                         });
                   },
                   title: addressTextEditingController.text.isEmpty
@@ -117,6 +125,7 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
                     Helpers.showCheckoutDialog(
                         context: context,
                         title: 'ملاحظات',
+                        iconUrl: 'assets/images/svgIcons/note_icon.svg',
                         content: 'قم بادخال ملاحظاتك رجاءا',
                         hintText: 'ملاحظات..',
                         controller: noteTextEditingController,
@@ -125,6 +134,7 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
                             checkoutBloc.sendOrderModel.note =
                                 noteTextEditingController.text.trim();
                           });
+                          Navigator.pop(context);
                         });
                   },
                   title: noteTextEditingController.text.isEmpty
@@ -143,11 +153,13 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
                         content: 'هل لديك كوبون ؟!',
                         hintText: 'الكوبون',
                         controller: couponTextEditingController,
+                        iconUrl: 'assets/images/svgIcons/coupon_icon.svg',
                         function: () {
                           setState(() {
                             checkoutBloc.sendOrderModel.coupon =
                                 couponTextEditingController.text.trim();
                           });
+                          Navigator.pop(context);
                         });
                   },
                   title: 'هل لديك كوبون؟',
@@ -159,7 +171,7 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
                 Text(
                   'استعمالك للتطبيق يشترط موافقتك على',
                   style:
-                  TextStyle(fontWeight: FontWeight.w500, fontSize: 10.sp),
+                      TextStyle(fontWeight: FontWeight.w500, fontSize: 10.sp),
                 ),
                 SizedBox(
                   height: 4.h,
@@ -167,7 +179,7 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
                 Text(
                   'شروط الإستخدام',
                   style:
-                  TextStyle(fontWeight: FontWeight.w700, fontSize: 11.sp),
+                      TextStyle(fontWeight: FontWeight.w700, fontSize: 11.sp),
                 ),
               ],
             ),
@@ -190,7 +202,7 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
                         ),
                         const Spacer(),
                         Text(
-                          '₪${checkoutBloc.sendOrderModel.options?.cost}',
+                          '₪${checkoutBloc.getTotalPrice()}',
                           style: TextStyle(
                               fontSize: 16.sp, fontWeight: FontWeight.w700),
                         ),
@@ -200,11 +212,19 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
                       height: 22.h,
                     ),
                     CustomFiledElevatedBtn(
-                        function: () =>
+                        function: () {
+                          if (checkoutBloc.sendOrderModel.address == null) {
+                            showSnackBar(context,
+                                massage: 'قم بداخال العنوان رجاءا',
+                                error: true);
+                          } else {
                             openConditionDialog(
+                              isProducts: widget.isProducts,
                               context,
-                                  () {},
-                            ),
+                              () {},
+                            );
+                          }
+                        },
                         text: 'التالي'),
                   ],
                 ),
@@ -215,7 +235,8 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
     );
   }
 
-  void openConditionDialog(BuildContext context, VoidCallback function) {
+  void openConditionDialog(BuildContext context, VoidCallback function,
+      {bool isProducts = false}) {
     showGeneralDialog(
         barrierColor: Colors.transparent,
         transitionBuilder: (context, a1, a2, widget) {
@@ -239,9 +260,7 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
                 //       end: 1,
                 //     ),
                 //     weight: 15),
-              ])
-                  .animate(a1)
-                  .value,
+              ]).animate(a1).value,
               child: Opacity(
                 opacity: a1.value,
                 child: BackdropFilter(
@@ -252,7 +271,9 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
                     elevation: 0,
                     content: StatefulBuilder(
                       builder: (context, setStateModelParent) {
-                        return const SelectPaymentMethod();
+                        return SelectPaymentMethod(
+                          isProducts: isProducts,
+                        );
                       },
                     ),
                   ),

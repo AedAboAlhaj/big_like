@@ -57,7 +57,6 @@ class ServicesApiController {
     } catch (e) {
       return null;
     }
-    print(url);
     if (response.statusCode == 200) {
       var jsonObject = jsonDecode(response.body);
 

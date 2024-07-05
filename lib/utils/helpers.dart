@@ -1,7 +1,9 @@
 import 'dart:ui';
 
+import 'package:another_flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_svg/svg.dart';
 
 import '../common_widgets/custom_filed_elevated_btn.dart';
 import '../constants/consts.dart';
@@ -204,6 +206,7 @@ mixin Helpers {
       required String title,
       required String content,
       required String hintText,
+      required String iconUrl,
       required TextEditingController controller,
       bool largeTextField = true,
       required VoidCallback function,
@@ -259,7 +262,7 @@ mixin Helpers {
                         key: formKey,
                         child: SizedBox(
                           width: 1.sw,
-                          height: 1.sh / 2 - 30,
+                          height: 1.sh / 2 - 100,
                           child: Stack(
                             children: [
                               Positioned.fill(
@@ -280,65 +283,6 @@ mixin Helpers {
                                       ),
                                     ),
                                     const Spacer(),
-                                    FormField(
-                                      validator: (String? value) {
-                                        if (controller.text.isEmpty) {
-                                          return 'مطلوب';
-                                        }
-                                        return null;
-                                      },
-                                      builder: (FormFieldState state) {
-                                        return TextField(
-                                          controller: controller,
-                                          cursorColor: Theme.of(context)
-                                              .textTheme
-                                              .bodySmall!
-                                              .color!,
-                                          textAlign: TextAlign.start,
-                                          maxLines: 1,
-                                          style: TextStyle(
-                                              color: Theme.of(context)
-                                                  .textTheme
-                                                  .bodySmall!
-                                                  .color!,
-                                              fontFamily: kFontFamilyName,
-                                              fontWeight: FontWeight.bold,
-                                              fontSize: 18.sp,
-                                              height: 1.5),
-                                          autocorrect: false,
-                                          cursorHeight: 27.h,
-                                          cursorRadius: Radius.circular(100.r),
-                                          textAlignVertical:
-                                              TextAlignVertical.center,
-                                          decoration: InputDecoration(
-                                            enabledBorder: InputBorder.none,
-                                            focusedBorder: InputBorder.none,
-                                            label: Text(
-                                              hintText,
-                                              textAlign: TextAlign.center,
-                                              style: TextStyle(
-                                                color: state.hasError
-                                                    ? kRedColor
-                                                    : Theme.of(context)
-                                                        .textTheme
-                                                        .bodySmall!
-                                                        .color!,
-                                                fontFamily: kFontFamilyName,
-                                                height: 0,
-                                                fontWeight: FontWeight.bold,
-                                                fontSize: 10.sp,
-                                              ),
-                                            ),
-                                            border: InputBorder.none,
-                                            contentPadding:
-                                                const EdgeInsets.only(top: 0),
-                                          ),
-                                        );
-                                      },
-                                    ),
-                                    SizedBox(
-                                      height: 10.h,
-                                    ),
                                     Text(
                                       content,
                                       textAlign: TextAlign.center,
@@ -349,8 +293,107 @@ mixin Helpers {
                                             .textTheme
                                             .bodySmall!
                                             .color!,
+                                        fontWeight: FontWeight.w700,
                                         fontFamily: kFontFamilyName,
                                       ),
+                                    ),
+                                    const Spacer(),
+                                    FormField(
+                                      validator: (String? value) {
+                                        if (controller.text.isEmpty) {
+                                          return 'مطلوب';
+                                        }
+                                        return null;
+                                      },
+                                      builder: (FormFieldState state) {
+                                        return Column(
+                                          children: [
+                                            Row(
+                                              children: [
+                                                SvgPicture.asset(iconUrl),
+                                                SizedBox(
+                                                  width: 10.w,
+                                                ),
+                                                Expanded(
+                                                  child: TextField(
+                                                    controller: controller,
+                                                    cursorColor:
+                                                        Theme.of(context)
+                                                            .textTheme
+                                                            .bodySmall!
+                                                            .color!,
+                                                    textAlign: TextAlign.start,
+                                                    maxLines: 1,
+                                                    style: TextStyle(
+                                                        color: Theme.of(context)
+                                                            .textTheme
+                                                            .bodySmall!
+                                                            .color!,
+                                                        fontFamily:
+                                                            kFontFamilyName,
+                                                        fontWeight:
+                                                            FontWeight.bold,
+                                                        fontSize: 18.sp,
+                                                        height: 1.5),
+                                                    autocorrect: false,
+                                                    cursorHeight: 27.h,
+                                                    cursorRadius:
+                                                        Radius.circular(100.r),
+                                                    textAlignVertical:
+                                                        TextAlignVertical
+                                                            .center,
+                                                    decoration: InputDecoration(
+                                                      // enabledBorder: InputBorder.none,
+                                                      focusedBorder:
+                                                          UnderlineInputBorder(
+                                                              borderSide:
+                                                                  BorderSide(
+                                                                      color:
+                                                                          kPrimaryColor)),
+                                                      label: Text(
+                                                        hintText,
+                                                        textAlign:
+                                                            TextAlign.center,
+                                                        style: TextStyle(
+                                                          color: state.hasError
+                                                              ? kRedColor
+                                                              : Theme.of(
+                                                                      context)
+                                                                  .textTheme
+                                                                  .bodySmall!
+                                                                  .color!,
+                                                          fontFamily:
+                                                              kFontFamilyName,
+                                                          height: 0,
+                                                          fontWeight:
+                                                              FontWeight.bold,
+                                                          fontSize: 12.sp,
+                                                        ),
+                                                      ),
+                                                      border: UnderlineInputBorder(
+                                                          borderSide: BorderSide(
+                                                              color:
+                                                                  kPrimaryColor)),
+                                                      contentPadding:
+                                                          const EdgeInsets.only(
+                                                              top: 0),
+                                                    ),
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                            const SizedBox(
+                                              height: 5,
+                                            ),
+                                            Text(
+                                              state.errorText ?? '',
+                                              style: TextStyle(
+                                                  color: kRedColor,
+                                                  fontSize: 10.sp),
+                                            ),
+                                          ],
+                                        );
+                                      },
                                     ),
                                     const Spacer(),
                                     SizedBox(
@@ -441,6 +484,48 @@ mixin Helpers {
 
   void showSnackBar(BuildContext context,
       {required String massage, bool error = false}) {
+    Flushbar(
+      message: massage,
+      icon: Icon(
+        !error ? Icons.check_circle_outline : Icons.info_outline,
+        size: 30.0,
+        color: kWhiteColor,
+      ),
+      flushbarPosition: FlushbarPosition.TOP,
+      flushbarStyle: FlushbarStyle.FLOATING,
+      borderRadius: kBorderRadius5,
+      margin: const EdgeInsets.all(5),
+      duration: const Duration(seconds: 2),
+      backgroundColor: error ? kRedColor : kPrimaryColor,
+      // leftBarIndicatorColor: Colors.blue[300],
+    ).show(context);
+
+    // ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+    //   behavior: SnackBarBehavior.floating,
+    //   duration: const Duration(seconds: 2),
+    //   content: Row(
+    //     children: [
+    //       Text(
+    //         massage,
+    //         style: TextStyle(
+    //             color: Colors.white,
+    //             fontWeight: FontWeight.bold,
+    //             fontSize: 18.sp),
+    //       ),
+    //       const Spacer(),
+    //       Icon(
+    //         !error ? Icons.check_circle_outline : Icons.cancel_outlined,
+    //         color: Colors.white,
+    //         size: 30,
+    //       )
+    //     ],
+    //   ),
+    //   backgroundColor: error ? kRedColor : kPrimaryColor,
+    // ));
+  }
+
+/*  void showSnackBar(BuildContext context,
+      {required String massage, bool error = false}) {
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
       behavior: SnackBarBehavior.floating,
       duration: const Duration(seconds: 2),
@@ -451,7 +536,7 @@ mixin Helpers {
             style: TextStyle(
                 color: Colors.white,
                 fontWeight: FontWeight.bold,
-                fontSize: 32.sp),
+                fontSize: 18.sp),
           ),
           const Spacer(),
           Icon(
@@ -463,5 +548,5 @@ mixin Helpers {
       ),
       backgroundColor: error ? kRedColor : kPrimaryColor,
     ));
-  }
+  }*/
 }

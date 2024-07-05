@@ -108,10 +108,14 @@ class _ServiceScreenState extends State<ServiceScreen>
                 return const CustomLoadingIndicator();
               }
               serviceModel = state.serviceModel;
-              selectedOption = serviceModel.options.isNotEmpty
-                  ? serviceModel.options.first
-                  : null;
-              selectedOption?.isSelected = true;
+              if (!(serviceModel.options.any(
+                    (element) => element.isSelected,
+                  )) &&
+                  serviceModel.options.isNotEmpty) {
+                selectedOption = serviceModel.options.first;
+                serviceModel.options.first.isSelected = true;
+                selectedOption?.isSelected = true;
+              }
 
               return Stack(
                 children: [
@@ -156,7 +160,7 @@ class _ServiceScreenState extends State<ServiceScreen>
                               ),
                               Padding(
                                 padding: EdgeInsets.symmetric(
-                                  horizontal: 15.w,
+                                  horizontal: 20.w,
                                 ),
                                 child: Row(
                                   crossAxisAlignment: CrossAxisAlignment.center,
@@ -230,7 +234,7 @@ class _ServiceScreenState extends State<ServiceScreen>
                               ),
                               Padding(
                                 padding: EdgeInsets.symmetric(
-                                  horizontal: 15.w,
+                                  horizontal: 20.w,
                                 ),
                                 child: Text(
                                   widget.serviceModel.description ?? "",
@@ -250,7 +254,7 @@ class _ServiceScreenState extends State<ServiceScreen>
                               ),
                               Padding(
                                 padding: EdgeInsets.symmetric(
-                                  horizontal: 15.w,
+                                  horizontal: 20.w,
                                 ),
                                 child: Text(
                                   'الخيارات المقترحة',
@@ -271,9 +275,23 @@ class _ServiceScreenState extends State<ServiceScreen>
                               ListView.separated(
                                 itemCount: serviceModel.options.length,
                                 shrinkWrap: true,
-                                padding: EdgeInsets.symmetric(horizontal: 15.w),
+                                physics: const NeverScrollableScrollPhysics(),
+                                padding: EdgeInsets.only(
+                                  right: 15.w,
+                                  left: 15.w,
+                                ),
                                 itemBuilder: (BuildContext context, int index) {
                                   return ServiceOptionCard(
+                                    function: () {
+                                      for (var element
+                                          in serviceModel.options) {
+                                        element.isSelected = false;
+                                      }
+                                      selectedOption =
+                                          serviceModel.options[index];
+                                      selectedOption?.isSelected = true;
+                                      setState(() {});
+                                    },
                                     options: serviceModel.options[index],
                                   );
                                 },
@@ -295,7 +313,7 @@ class _ServiceScreenState extends State<ServiceScreen>
                   ),
                   Positioned(
                       top: 45.h,
-                      left: 15.w,
+                      left: 20.w,
                       child: Column(
                         children: [
                           GestureDetector(

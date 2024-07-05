@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:big_like/local_storage/secure_storage.dart';
+import 'package:big_like/local_storage/shared_preferences.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -461,6 +462,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       content: 'هل انت متاكد انك تريد تسجيل الخروج؟',
                       function: () {
                         AppSecureStorage().clean();
+                        AppSharedPref().clear();
                         Navigator.pushAndRemoveUntil(
                             context,
                             MaterialPageRoute(

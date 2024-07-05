@@ -1,18 +1,15 @@
 import 'package:big_like/common_widgets/custom_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-
 import '../../../../constants/consts.dart';
+import '../../domain/models/banner_api_model.dart';
 
 class BannerCard extends StatelessWidget {
-/*
   final BannerApiModel bannerModel;
-  final List<CategoryApiModel> list;
-*/
 
   const BannerCard({
-    super.key,
-    /*required this.bannerModel, required this.list*/
+    super.key, required this.bannerModel,
+    /* required this.list*/
   });
 
   @override
@@ -157,8 +154,8 @@ class BannerCard extends StatelessWidget {
         ),
         clipBehavior: Clip.antiAlias,
         width: double.infinity,
-        child: const CustomNetworkImage(
-          imageUrl: 'uploads/services/66549c62048c2.jpg',
+        child: CustomNetworkImage(
+          imageUrl: bannerModel.image,
         ),
       ),
     );

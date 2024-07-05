@@ -1,13 +1,41 @@
 import 'dart:io';
 import 'package:big_like/constants/consts.dart';
+import 'package:big_like/features/check_out/domain/models/date_model.dart';
+import 'package:big_like/local_storage/shared_preferences.dart';
 import 'package:big_like/utils/helpers.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:intl/intl.dart';
 
 class Utils {
   static ColorFilter svgColor(Color color) {
     return ColorFilter.mode(color, BlendMode.srcIn);
+  }
+
+  static TimeOfDay stringToTimeOfDay(String time) {
+    // Parse the time from the string
+    DateFormat format = DateFormat.Hm(); // for 24 hour format
+    // DateFormat format = DateFormat('h:mm a'); // for 12 hour format
+    DateTime dateTime = format.parse(time);
+
+    // Convert it to TimeOfDay
+    return TimeOfDay(hour: dateTime.hour, minute: dateTime.minute);
+  }
+
+  static String formatDateString(String dateString) {
+    // Parse the string date
+    DateTime dateTime = DateTime.parse(dateString);
+
+    // Format the date to 'EEEE, MMMM d, yyyy' format
+    DateFormat formatter =
+        DateFormat('EEEE, MMMM d', AppSharedPref().languageLocale ?? 'en');
+    return formatter.format(dateTime);
+  }
+
+  static String formatDateTime(DateTime? dt) {
+    // Format the DateTime object into MM.DD.YY format
+    return dt != null ? DateFormat('MM.dd.yy\nhh:mm').format(dt) : '';
   }
 
   static Future<void> checkNetwork(

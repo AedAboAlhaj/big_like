@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:big_like/features/check_out/data/checkout_api_controller.dart';
+import 'package:big_like/local_storage/secure_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../../../common_widgets/custom_filed_elevated_btn.dart';
@@ -166,10 +167,10 @@ class _CardsScreenState extends State<CardsScreen>
                       text: 'الدفع ببطاقة جديدة',
                       function: () async {
                         onLoading(context, () {});
-
+                        final phone = await AppSecureStorage().getPhone();
                         String? signature =
                             await _checkoutApiController.authCreditPayment(
-                                phoneNum: AppSharedPref().phoneNum,
+                                phoneNum: phone,
                                 total: widget.amount,
                                 paymentPortalInfo: widget.paymentPortalInfo);
                         if (signature != null) {

@@ -1,97 +1,85 @@
-import 'package:big_like/features/orders/domain/models/product_api_model.dart';
+import 'package:big_like/features/products/domain/models/products_api_model.dart';
+
+import '../../../services/domain/models/service_model.dart';
+import '../../../services/domain/models/service_order_model.dart';
 
 class OrderApiModel {
   OrderApiModel({
     required this.id,
-    required this.orderNum,
-    required this.address,
-    required this.total,
     required this.status,
-    required this.deliveryCost,
-    required this.couponCost,
-    required this.couponFreeDelivery,
+    this.onWayTime,
+    this.doneTime,
+    this.canceledTime,
+    required this.pendingTime,
     required this.paymentMethod,
-    this.note,
+    required this.customerInfo,
+    required this.service,
     required this.products,
+    required this.productsInfo,
+    required this.total,
+    this.note,
   });
 
   late final int id;
-  late final String orderNum;
-  late final Address address;
-  late final num total;
-  late final String status;
-  late final String? inProgressDeliveryTime;
-  late final String? preparationTime;
-  late final String? readyTime;
-  late final String? deliveryTime;
-  late final String? deliveryArrivalTime;
-  late final String? newTime;
-  late final num deliveryCost;
-  late final num couponCost;
-  late final bool couponFreeDelivery;
-  late final bool isRated;
+  late final int status;
+  late final DateTime? onWayTime;
+  late final DateTime? doneTime;
+  late final DateTime? canceledTime;
+  late final DateTime? pendingTime;
   late final String paymentMethod;
+  late final CustomerInfo customerInfo;
+  late final ServiceOrderModel? service;
+  late final List<ProductApiModel> products;
+  late final ProductsInfo? productsInfo;
+
+  late final num total;
   late final String? note;
-  late final String? pendingTime;
-  late final List<ProductOrderApiModel> products;
 
   OrderApiModel.fromJson(Map<String, dynamic> json) {
     id = json['id'];
-    orderNum = json['order_num'];
-    pendingTime = json['pending_time'];
-    address = json['address'] != null
-        ? Address.fromJson(json['address'])
-        : Address(
-        id: -1,
-        createdAt: '',
-        customerId: -1,
-        km: 0,
-        latitude: '0',
-        longitude: '0',
-        specialMarque: '',
-        updatedAt: '',
-        addressDetails: null,
-        addressName: null);
-    total = num.parse(json['total'].toString().replaceAll(',', ''));
-    preparationTime = json['prepration_time'];
-    inProgressDeliveryTime = json['in_progress_delivery_time'];
-    readyTime = json['ready_time'];
-
-    deliveryTime = json['delivery_time'];
-    deliveryArrivalTime = json['delivery_arrival_time'];
-    // deliveryTime = json['delivery_time'];
-    newTime = json['new'];
-
-    status = json['status'] ?? '';
-
-    deliveryCost =
-        num.parse(json['delivery_cost'].toString().replaceAll(',', ''));
-    couponCost = num.parse(json['coupon_cost'].toString().replaceAll(',', ''));
-    couponFreeDelivery = json['coupon_free_delivery'] != null
-        ? json['coupon_free_delivery'] == 1
-        : false;
-    isRated = json['is_rated'] ?? false;
-    paymentMethod = json['Payment_method'];
-    note = json['note'];
-
+    status = json['status'];
+    onWayTime = DateTime.tryParse(json['on_way_time'] ?? '');
+    doneTime = DateTime.tryParse(json['done_time'] ?? '');
+    canceledTime = DateTime.tryParse(json['canceled_time'] ?? '');
+    pendingTime = DateTime.tryParse(json['pending_time'] ?? '');
+    paymentMethod = json['payment_method'] == 0 ? 'cash' : 'visa';
+    customerInfo = CustomerInfo.fromJson(json['customerInfo']);
+    service = json['service'] != null
+        ? ServiceOrderModel.fromJson(json['service'])
+        : null;
     products = List.from(json['products'])
-        .map((e) => ProductOrderApiModel.fromJson(e))
+        .map((e) => ProductApiModel.fromJson(e))
         .toList();
+    productsInfo = json['productsInfo'] != null
+        ? ProductsInfo.fromJson(json['productsInfo'])
+        : null;
+    total = json['total'] ?? 0;
+    note = json['note'] ?? '';
+  }
+}
+
+class CustomerInfo {
+  CustomerInfo({
+    required this.address,
+    this.country,
+    required this.city,
+  });
+
+  late final String address;
+  late final Null country;
+  late final String city;
+
+  CustomerInfo.fromJson(Map<String, dynamic> json) {
+    address = json['address'];
+    country = null;
+    city = json['city'];
   }
 
   Map<String, dynamic> toJson() {
     final data = <String, dynamic>{};
-    data['id'] = id;
-    data['order_num'] = orderNum;
-    data['address'] = address.toJson();
-    data['total'] = total;
-    data['status'] = status;
-    data['delivery_cost'] = deliveryCost;
-    data['coupon_cost'] = couponCost;
-    data['coupon_free_delivery'] = couponFreeDelivery;
-    data['Payment_method'] = paymentMethod;
-    data['note'] = note;
-    data['products'] = products.map((e) => e.toJson()).toList();
+    data['address'] = address;
+    data['country'] = country;
+    data['city'] = city;
     return data;
   }
 }
@@ -351,6 +339,24 @@ class SendOrderReviewApiModel {
     data['app'] = appRating;
     data['order_id'] = orderId;
 
+    return data;
+  }
+}
+
+class ProductsInfo {
+  ProductsInfo({
+    required this.deliveryCost,
+  });
+
+  late final int deliveryCost;
+
+  ProductsInfo.fromJson(Map<String, dynamic> json) {
+    deliveryCost = json['delivery_cost'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final data = <String, dynamic>{};
+    data['delivery_cost'] = deliveryCost;
     return data;
   }
 }

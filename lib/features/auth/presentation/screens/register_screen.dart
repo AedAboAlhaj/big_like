@@ -124,7 +124,7 @@ class _RegisterScreenState extends State<RegisterScreen> with Helpers {
     newUser.phone = widget.phoneNumber;
     // newUser.birthdate = ;
     // newUser.city = _cityTextEditingController.text;
-    int? code = await _authApiController.register(
+    int? code = await _authApiController.registerCustomer(
       userApiModel: newUser,
     );
     // bool  = await _authApiController.sendOtp(

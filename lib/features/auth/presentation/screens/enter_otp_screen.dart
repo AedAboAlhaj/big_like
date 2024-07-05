@@ -284,6 +284,8 @@ class _EnterOtpScreenState extends State<EnterOtpScreen> with Helpers {
       await AppSecureStorage().setToken(userData.token);
       await AppSecureStorage().setPhone(userData.phone);
 
+      await AppSharedPref().saveUserType(userType: userData.type);
+
       if (mounted) {
         Navigator.pop(context);
 

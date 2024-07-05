@@ -13,24 +13,24 @@ class ServicesBloc extends Bloc<ServicesEvent, ServicesState> {
 
   ServicesBloc(this.servicesApiController) : super(ServicesInitial()) {
     on<ServicesEvent>((event, emit) {});
-    on<ServicesFetched>(_getServicesList);
+    // on<ServicesFetched>(_getServicesList);
     on<ServiceFetched>(_getServiceDetails);
   }
 
   // final ServicesApiController _servicesApiController = ServicesApiController();
 
-  void _getServicesList(
-      ServicesFetched event, Emitter<ServicesState> emit) async {
-    emit(ServicesLoading());
-
-    try {
-      final servicesList = await servicesApiController.getServices();
-
-      emit(ServicesSuccess(serviceList: servicesList));
-    } catch (e) {
-      emit(ServicesFailure(e.toString()));
-    }
-  }
+  // void _getServicesList(
+  //     ServicesFetched event, Emitter<ServicesState> emit) async {
+  //   emit(ServicesLoading());
+  //
+  //   try {
+  //     final servicesList = await servicesApiController.getServices();
+  //
+  //     emit(ServicesSuccess(serviceList: servicesList));
+  //   } catch (e) {
+  //     emit(ServicesFailure(e.toString()));
+  //   }
+  // }
 
   void _getServiceDetails(
       ServiceFetched event, Emitter<ServicesState> emit) async {

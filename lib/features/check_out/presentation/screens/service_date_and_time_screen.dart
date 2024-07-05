@@ -29,7 +29,8 @@ class _ServiceDateAndTimeScreenState extends State<ServiceDateAndTimeScreen> {
     // TODO: implement initState
     super.initState();
     checkoutBloc = BlocProvider.of<CheckoutBloc>(context);
-    context.read<CheckoutBloc>().add(ScheduleFetched());
+    context.read<CheckoutBloc>().add(ScheduleFetched(
+        optionId: checkoutBloc.sendOrderModel.options?.id ?? 0));
   }
 
   @override
@@ -81,7 +82,7 @@ class _ServiceDateAndTimeScreenState extends State<ServiceDateAndTimeScreen> {
                           height: 12.h,
                         ),
                         SizedBox(
-                          height: 70.h,
+                          height: 80.h,
                           child: ListView.separated(
                             scrollDirection: Axis.horizontal,
                             padding: const EdgeInsets.symmetric(horizontal: 15),
@@ -99,27 +100,28 @@ class _ServiceDateAndTimeScreenState extends State<ServiceDateAndTimeScreen> {
                                 child: Column(
                                   children: [
                                     Text(
-                                      datesList[index].day,
-                                      style: const TextStyle(
+                                      DateFormat.E(
+                                              AppSharedPref().languageLocale)
+                                          .format(DateFormat("yyyy-MM-DD")
+                                              .parse(datesList[index].date)),
+                                      style: TextStyle(
                                           color: kDarkGrayColor,
+                                          height: 2,
+                                          fontSize: 12.sp,
                                           fontWeight: FontWeight.w600),
                                     ),
                                     CircleAvatar(
-                                        radius: 20.h,
+                                        radius: 24.h,
                                         backgroundColor: selectedDay == index
                                             ? kPrimaryColor
                                             : Colors.transparent,
                                         child: Text(
-                                          DateFormat.E(AppSharedPref()
-                                                  .languageLocale)
-                                              .format(DateFormat("yyyy-MM-DD")
-                                                  .parse(
-                                                      datesList[index].date)),
+                                          datesList[index].day,
                                           style: TextStyle(
-                                              fontSize: 10.sp,
+                                              fontSize: 18.sp,
                                               color: selectedDay == index
-                                                  ? Colors.white
-                                                  : kDarkGrayColor,
+                                                  ? kWhiteColor
+                                                  : kBlackColor,
                                               height: 1,
                                               fontWeight: selectedDay == index
                                                   ? FontWeight.w700
@@ -178,7 +180,9 @@ class _ServiceDateAndTimeScreenState extends State<ServiceDateAndTimeScreen> {
                                                 width: 10,
                                               ),
                                               Text(
-                                                '${datesList[selectedDay].times[index].startTime} -> ${datesList[selectedDay].times[index].endTime}',
+                                                datesList[selectedDay]
+                                                    .times[index]
+                                                    .time,
                                                 style: const TextStyle(
                                                     fontSize: 15,
                                                     color: Colors.black54,
@@ -220,14 +224,8 @@ class _ServiceDateAndTimeScreenState extends State<ServiceDateAndTimeScreen> {
                         function: () {
                           checkoutBloc.sendOrderModel.date =
                               datesList[selectedDay].date;
-                          checkoutBloc.sendOrderModel.startTime =
-                              datesList[selectedDay]
-                                  .times[selectedTime]
-                                  .startTime;
-                          checkoutBloc.sendOrderModel.endTime =
-                              datesList[selectedDay]
-                                  .times[selectedTime]
-                                  .endTime;
+                          checkoutBloc.sendOrderModel.time =
+                              datesList[selectedDay].times[selectedTime].time;
                           showCupertinoModalBottomSheet(
                             expand: true,
                             bounce: false,
