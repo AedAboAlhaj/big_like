@@ -14,7 +14,8 @@ import 'package:big_like/features/orders/bloc/order_bloc.dart';
 import 'package:big_like/features/orders/data/orders_api_controller.dart';
 import 'package:big_like/features/products/bloc/cart_cubit.dart';
 import 'package:big_like/features/services/data/services_api_controller.dart';
-import 'package:big_like/features/worker_times/bloc/order_cubit.dart';
+import 'package:big_like/features/worker_times/bloc/hollydays_cubit.dart';
+import 'package:big_like/features/worker_times/bloc/work_times_cubit.dart';
 import 'package:big_like/local_storage/secure_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -88,7 +89,8 @@ class _MyAppState extends State<MyApp> {
           BlocProvider(create: (_) => CartCubit()),
           BlocProvider(create: (_) => OrderCubit()),
           BlocProvider(create: (_) => OrderCubit()),
-          BlocProvider(create: (_) => WorkerTimesCubit()),
+          BlocProvider(create: (_) => WorkTimesCubit()),
+          BlocProvider(create: (_) => HollyDaysCubit()),
         ],
         child: ScreenUtilInit(
             designSize: const Size(428, 926),
@@ -100,7 +102,7 @@ class _MyAppState extends State<MyApp> {
                   GlobalWidgetsLocalizations.delegate,
                 ],
                 debugShowCheckedModeBanner: false,
-                themeMode: ThemeMode.system,
+                themeMode: ThemeMode.light,
                 theme: MyThemes.lightTheme,
                 supportedLocales: [
                   Locale(AppSharedPref().languageLocale?.toLowerCase() ?? 'ar'),

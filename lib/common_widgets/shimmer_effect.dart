@@ -125,7 +125,8 @@ class ShimmerEffect extends StatelessWidget {
 }
 
 class ShimmerImageEffect extends StatelessWidget {
-  const ShimmerImageEffect({Key? key, required this.content}) : super(key: key);
+  const ShimmerImageEffect({super.key, required this.content});
+
   final Widget content;
 
   @override
@@ -141,15 +142,16 @@ class ShimmerImageEffect extends StatelessWidget {
 }
 
 class BannerShimmer extends StatelessWidget {
-  const BannerShimmer({Key? key}) : super(key: key);
+  const BannerShimmer({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Container(
-        decoration: const BoxDecoration(
+        decoration: BoxDecoration(
           color: Colors.white,
+          borderRadius: kBorderRadius,
         ),
-        height: 141.h,
+        height: 180.h,
         width: 1.sw);
   }
 }
@@ -290,32 +292,29 @@ class SubCategoriesListHShimmer extends StatelessWidget {
 }
 
 class MainCategoriesListVerticalShimmer extends StatelessWidget {
-  const MainCategoriesListVerticalShimmer({Key? key}) : super(key: key);
+  const MainCategoriesListVerticalShimmer({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
-      child: CustomScrollView(
-        physics: const NeverScrollableScrollPhysics(),
-        shrinkWrap: true,
-        slivers: <Widget>[
-          SliverGrid(
-            delegate: SliverChildBuilderDelegate(
-              (context, index) {
-                return const MainCategoryShimmerCard();
-              },
-              childCount: 12,
-            ),
-            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 3,
-              mainAxisSpacing: 10.h,
-              crossAxisSpacing: 10.w,
-              childAspectRatio: 120.w / 150.h,
-            ),
+    return CustomScrollView(
+      physics: const NeverScrollableScrollPhysics(),
+      shrinkWrap: true,
+      slivers: <Widget>[
+        SliverGrid(
+          delegate: SliverChildBuilderDelegate(
+            (context, index) {
+              return const MainCategoryShimmerCard();
+            },
+            childCount: 4,
           ),
-        ],
-      ),
+          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: 2,
+            mainAxisSpacing: 15.h,
+            crossAxisSpacing: 15.w,
+            childAspectRatio: 177.w / 203.h,
+          ),
+        ),
+      ],
     );
   }
 }
@@ -352,89 +351,23 @@ class ProductListVerticalShimmer extends StatelessWidget {
 }
 
 class HomeScreenShimmer extends StatelessWidget {
-  const HomeScreenShimmer({Key? key}) : super(key: key);
+  const HomeScreenShimmer({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      physics: const NeverScrollableScrollPhysics(),
-      child: Column(
-        children: [
-          SizedBox(
-            height: 12.h,
-          ),
-          SizedBox(
-            height: 25.h,
-            child: Padding(
-              padding: EdgeInsets.only(right: 15.w, left: 28.w),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Container(
-                    height: 20.h,
-                    width: 68.w,
-                    decoration: const BoxDecoration(color: Colors.white),
-                  ),
-                  Container(
-                    height: 20.h,
-                    width: 68.w,
-                    decoration: const BoxDecoration(color: Colors.white),
-                  ),
-                ],
-              ),
-            ),
-          ),
-          SizedBox(
-            height: 12.h,
-          ),
-          const MainCategoriesListHShimmer(),
-          SizedBox(
-            height: 22.h,
-          ),
-          const SearchBarShimmer(),
-          SizedBox(
-            height: 10.h,
-          ),
-          const BannerShimmer(),
-          SizedBox(
-            height: 15.h,
-          ),
-          Padding(
-            padding: EdgeInsets.symmetric(horizontal: 15.w),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Container(
-                  height: 20.h,
-                  width: 100.w,
-                  decoration: const BoxDecoration(color: Colors.white),
-                ),
-              ],
-            ),
-          ),
-          SizedBox(
-            height: 12.h,
-          ),
-          const ProductListHShimmer(),
-          Padding(
-            padding: EdgeInsets.symmetric(horizontal: 15.w),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Container(
-                  height: 20.h,
-                  width: 100.w,
-                  decoration: const BoxDecoration(color: Colors.white),
-                ),
-              ],
-            ),
-          ),
-          SizedBox(
-            height: 12.h,
-          ),
-          const ProductListHShimmer(),
-        ],
-      ),
+    return ListView(
+      padding: EdgeInsets.symmetric(horizontal: 15.w),
+      children: [
+        const BannerShimmer(),
+        SizedBox(
+          height: 15.h,
+        ),
+        const MainCategoriesListVerticalShimmer(),
+        SizedBox(
+          height: 15.h,
+        ),
+        const BannerShimmer(),
+      ],
     );
   }
 }
@@ -594,7 +527,7 @@ class ProductSimmerScreen extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.start,
       children: [
         Container(
-          height: 330.h,
+          height: 222.h,
           width: double.infinity,
           decoration: const BoxDecoration(color: Colors.white),
         ),
@@ -612,7 +545,7 @@ class ProductSimmerScreen extends StatelessWidget {
                 decoration: const BoxDecoration(color: Colors.white),
               ),
               SizedBox(
-                height: 10.h,
+                height: 34.h,
               ),
               Container(
                 height: 20.h,
@@ -626,21 +559,30 @@ class ProductSimmerScreen extends StatelessWidget {
           height: 20.h,
         ),
         Padding(
-          padding: EdgeInsets.only(right: 15.w, left: 28.w),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          padding: EdgeInsets.symmetric(horizontal: 30.w),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Container(
-                height: 40.h,
-                width: 100.w,
+                height: 15.h,
+                width: 150.w,
                 decoration: const BoxDecoration(color: Colors.white),
               ),
+              SizedBox(
+                height: 10.h,
+              ),
               Container(
-                height: 40.h,
-                width: 100.w,
-                decoration: const BoxDecoration(
-                  color: Colors.white,
-                ),
+                height: 10.h,
+                width: 268.w,
+                decoration: const BoxDecoration(color: Colors.white),
+              ),
+              SizedBox(
+                height: 10.h,
+              ),
+              Container(
+                height: 10.h,
+                width: 268.w,
+                decoration: const BoxDecoration(color: Colors.white),
               ),
             ],
           ),
@@ -649,12 +591,20 @@ class ProductSimmerScreen extends StatelessWidget {
           height: 20.h,
         ),
         Padding(
-          padding: EdgeInsets.symmetric(horizontal: 15.w),
+          padding: EdgeInsets.symmetric(horizontal: 30.w),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Container(
                 height: 15.h,
+                width: 150.w,
+                decoration: const BoxDecoration(color: Colors.white),
+              ),
+              SizedBox(
+                height: 10.h,
+              ),
+              Container(
+                height: 10.h,
                 width: 268.w,
                 decoration: const BoxDecoration(color: Colors.white),
               ),
@@ -662,16 +612,136 @@ class ProductSimmerScreen extends StatelessWidget {
                 height: 10.h,
               ),
               Container(
-                height: 15.h,
+                height: 10.h,
                 width: 268.w,
                 decoration: const BoxDecoration(color: Colors.white),
               ),
-              SizedBox(
-                height: 10.h,
-              ),
+            ],
+          ),
+        ),
+        SizedBox(
+          height: 20.h,
+        ),
+        Padding(
+          padding: EdgeInsets.symmetric(horizontal: 30.w),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
               Container(
                 height: 15.h,
                 width: 150.w,
+                decoration: const BoxDecoration(color: Colors.white),
+              ),
+              SizedBox(
+                height: 10.h,
+              ),
+              Container(
+                height: 10.h,
+                width: 268.w,
+                decoration: const BoxDecoration(color: Colors.white),
+              ),
+              SizedBox(
+                height: 10.h,
+              ),
+              Container(
+                height: 10.h,
+                width: 268.w,
+                decoration: const BoxDecoration(color: Colors.white),
+              ),
+            ],
+          ),
+        ),
+        SizedBox(
+          height: 20.h,
+        ),
+        Padding(
+          padding: EdgeInsets.symmetric(horizontal: 30.w),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Container(
+                height: 15.h,
+                width: 150.w,
+                decoration: const BoxDecoration(color: Colors.white),
+              ),
+              SizedBox(
+                height: 10.h,
+              ),
+              Container(
+                height: 10.h,
+                width: 268.w,
+                decoration: const BoxDecoration(color: Colors.white),
+              ),
+              SizedBox(
+                height: 10.h,
+              ),
+              Container(
+                height: 10.h,
+                width: 268.w,
+                decoration: const BoxDecoration(color: Colors.white),
+              ),
+            ],
+          ),
+        ),
+        SizedBox(
+          height: 20.h,
+        ),
+        Padding(
+          padding: EdgeInsets.symmetric(horizontal: 30.w),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Container(
+                height: 15.h,
+                width: 150.w,
+                decoration: const BoxDecoration(color: Colors.white),
+              ),
+              SizedBox(
+                height: 10.h,
+              ),
+              Container(
+                height: 10.h,
+                width: 268.w,
+                decoration: const BoxDecoration(color: Colors.white),
+              ),
+              SizedBox(
+                height: 10.h,
+              ),
+              Container(
+                height: 10.h,
+                width: 268.w,
+                decoration: const BoxDecoration(color: Colors.white),
+              ),
+            ],
+          ),
+        ),
+        SizedBox(
+          height: 20.h,
+        ),
+        Padding(
+          padding: EdgeInsets.symmetric(horizontal: 30.w),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Container(
+                height: 15.h,
+                width: 150.w,
+                decoration: const BoxDecoration(color: Colors.white),
+              ),
+              SizedBox(
+                height: 10.h,
+              ),
+              Container(
+                height: 10.h,
+                width: 268.w,
+                decoration: const BoxDecoration(color: Colors.white),
+              ),
+              SizedBox(
+                height: 10.h,
+              ),
+              Container(
+                height: 10.h,
+                width: 268.w,
                 decoration: const BoxDecoration(color: Colors.white),
               ),
             ],
@@ -680,23 +750,6 @@ class ProductSimmerScreen extends StatelessWidget {
         SizedBox(
           height: 30.h,
         ),
-        Padding(
-          padding: EdgeInsets.symmetric(horizontal: 15.w),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Container(
-                height: 20.h,
-                width: 100.w,
-                decoration: const BoxDecoration(color: Colors.white),
-              ),
-            ],
-          ),
-        ),
-        SizedBox(
-          height: 12.h,
-        ),
-        const ProductListHShimmer(),
       ],
     );
   }
@@ -813,116 +866,127 @@ class RecipeSimmerScreen extends StatelessWidget {
 }
 
 class OrderCardShimmer extends StatelessWidget {
-  const OrderCardShimmer({Key? key}) : super(key: key);
+  const OrderCardShimmer({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      decoration: BoxDecoration(
+      height: 1.sh / 2,
+      alignment: Alignment.center,
+      /*  decoration: BoxDecoration(
           border: Border.all(color: Theme.of(context).cardColor, width: 2)),
-      padding: const EdgeInsets.all(20),
+    */
+      padding: EdgeInsets.all(20.h),
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Container(
-                    height: 15.h,
-                    width: 100.w,
-                    color: Colors.white,
-                  ),
-                  SizedBox(
-                    height: 4.h,
-                  ),
-                  Container(
-                    height: 15.h,
-                    width: 76.w,
-                    color: Colors.white,
-                  ),
-                ],
+              Container(
+                height: 20.h,
+                width: 220.w,
+                color: Colors.white,
               ),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: [
-                  Container(
-                    height: 15.h,
-                    width: 100.w,
-                    color: Colors.white,
-                  ),
-                  SizedBox(
-                    height: 4.h,
-                  ),
-                  Container(
-                    height: 15.h,
-                    width: 66.w,
-                    color: Colors.white,
-                  ),
-                ],
-              )
+              SizedBox(
+                height: 30.h,
+              ),
+              Container(
+                height: 12.h,
+                width: 180.w,
+                color: Colors.white,
+              ),
+              SizedBox(
+                height: 15.h,
+              ),
+              Container(
+                height: 12.h,
+                width: 190.w,
+                color: Colors.white,
+              ),
             ],
           ),
           SizedBox(
-            height: 22.h,
-          ),
-          Container(
-            height: 30.h,
-            width: double.infinity,
-            decoration: const BoxDecoration(color: Colors.white),
-          ),
-          SizedBox(
-            height: 22.h,
-          ),
-          SizedBox(
-            height: 220.h,
-            child: ListView.separated(
-                shrinkWrap: true,
-                physics: const NeverScrollableScrollPhysics(),
-                itemBuilder: (context, index) {
-                  return const ProductOrderCardShimmer();
-                },
-                separatorBuilder: (context, index) {
-                  return const Divider(
-                    color: kWhiteColor,
-                  );
-                },
-                itemCount: 2),
-          ),
-          SizedBox(
-            height: 10.h,
+            height: 24.h,
           ),
           Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Container(
                 height: 15.h,
                 width: 120.w,
                 color: Colors.white,
               ),
+              SizedBox(
+                width: 50.w,
+              ),
               Container(
                 height: 15.h,
-                width: 60.w,
+                width: 40.w,
                 color: Colors.white,
               ),
             ],
           ),
           SizedBox(
-            height: 10.h,
+            height: 20.h,
           ),
           Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Container(
                 height: 15.h,
                 width: 120.w,
                 color: Colors.white,
               ),
+              SizedBox(
+                width: 50.w,
+              ),
               Container(
                 height: 15.h,
-                width: 60.w,
+                width: 40.w,
+                color: Colors.white,
+              ),
+            ],
+          ),
+          SizedBox(
+            height: 20.h,
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Container(
+                height: 15.h,
+                width: 120.w,
+                color: Colors.white,
+              ),
+              SizedBox(
+                width: 50.w,
+              ),
+              Container(
+                height: 15.h,
+                width: 40.w,
+                color: Colors.white,
+              ),
+            ],
+          ),
+          SizedBox(
+            height: 20.h,
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Container(
+                height: 15.h,
+                width: 120.w,
+                color: Colors.white,
+              ),
+              SizedBox(
+                width: 50.w,
+              ),
+              Container(
+                height: 15.h,
+                width: 40.w,
                 color: Colors.white,
               ),
             ],
@@ -931,11 +995,48 @@ class OrderCardShimmer extends StatelessWidget {
             height: 20.h,
           ),
           Container(
+            height: 30.h,
+            width: 250.w,
+            decoration: const BoxDecoration(color: Colors.white),
+          ),
+          SizedBox(
+            height: 24.h,
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Container(
+                height: 15.h,
+                width: 40.w,
+                color: Colors.white,
+              ),
+              SizedBox(
+                width: 50.w,
+              ),
+              Container(
+                height: 15.h,
+                width: 40.w,
+                color: Colors.white,
+              ),
+              SizedBox(
+                width: 50.w,
+              ),
+              Container(
+                height: 15.h,
+                width: 40.w,
+                color: Colors.white,
+              ),
+            ],
+          ),
+          /*    SizedBox(
+            height: 30.h,
+          ),
+          Container(
             height: 55.h,
             width: double.infinity,
             decoration: BoxDecoration(
                 borderRadius: kBorderRadius5, color: Colors.white),
-          ),
+          ),*/
         ],
       ),
     );
@@ -947,18 +1048,53 @@ class OrderScreenShimmer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListView.separated(
-        shrinkWrap: true,
-        padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 20),
-        physics: const NeverScrollableScrollPhysics(),
-        itemBuilder: (context, index) {
-          return const OrderCardShimmer();
-        },
-        separatorBuilder: (context, index) {
-          return const Divider(
-            color: kWhiteColor,
-          );
-        },
-        itemCount: 3);
+    return Column(
+      children: [
+        SizedBox(
+          height: 20.h,
+        ),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 15.0),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Expanded(
+                child: Container(
+                  height: 25.h,
+                  color: Colors.white,
+                ),
+              ),
+              SizedBox(
+                width: 50.w,
+              ),
+              Expanded(
+                child: Container(
+                  height: 25.h,
+                  color: Colors.white,
+                ),
+              ),
+            ],
+          ),
+        ),
+        SizedBox(
+          height: 30.h,
+        ),
+        Expanded(
+          child: ListView.separated(
+              shrinkWrap: true,
+              padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 20),
+              physics: const NeverScrollableScrollPhysics(),
+              itemBuilder: (context, index) {
+                return const OrderCardShimmer();
+              },
+              separatorBuilder: (context, index) {
+                return const Divider(
+                  color: kWhiteColor,
+                );
+              },
+              itemCount: 3),
+        ),
+      ],
+    );
   }
 }

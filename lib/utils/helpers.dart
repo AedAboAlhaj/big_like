@@ -4,6 +4,7 @@ import 'package:another_flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 import '../common_widgets/custom_filed_elevated_btn.dart';
 import '../constants/consts.dart';
@@ -131,9 +132,7 @@ mixin Helpers {
                                     width: 1.sw,
                                     child: CustomFiledElevatedBtn(
                                       text: btnText,
-                                      color: Theme.of(context)
-                                          .primaryColor
-                                          .withOpacity(.15),
+                                      color: kLightPrimaryColor,
                                       textColor: Theme.of(context).primaryColor,
                                       function: function,
                                       height: 50,
@@ -201,6 +200,17 @@ mixin Helpers {
     );
   }
 
+  bool isTimeAfter(TimeOfDay time1, TimeOfDay time2) {
+    if (time1.hour > time2.hour) {
+      return true;
+    } else if (time1.hour == time2.hour && time1.minute > time2.minute) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+/*
   static void showCheckoutDialog(
       {required BuildContext context,
       required String title,
@@ -440,6 +450,181 @@ mixin Helpers {
           ),
         );
       },
+    );
+  }
+*/
+  static void showCheckoutBottomSheet(
+      {required BuildContext context,
+      required String title,
+      required String content,
+      required String hintText,
+      required String iconUrl,
+      required TextEditingController controller,
+      bool largeTextField = true,
+      required VoidCallback function,
+      bool barrierDismissible = true}) {
+    final formKey = GlobalKey<FormState>();
+
+    showCupertinoModalBottomSheet(
+      expand: true,
+      bounce: false,
+      context: context,
+      backgroundColor: Colors.transparent,
+      builder: (context) => Scaffold(
+        body: Form(
+            key: formKey,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    TextButton(
+                        onPressed: () {
+                          if (formKey.currentState!.validate()) {
+                            function();
+                          }
+                        },
+                        style: TextButton.styleFrom(padding: EdgeInsets.zero),
+                        child: Text(
+                          'تم',
+                          style: TextStyle(
+                              color: kPrimaryColor,
+                              fontWeight: FontWeight.bold),
+                        )),
+                    Text(
+                      title,
+                      style: TextStyle(
+                        height: 2.2,
+                        fontSize: 18.sp,
+                        color: Theme.of(context).textTheme.bodySmall!.color!,
+                        fontFamily: kFontFamilyName,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    IconButton(
+                        onPressed: () {
+                          Navigator.pop(context);
+                        },
+                        padding: EdgeInsets.zero,
+                        icon: Icon(
+                          Icons.close,
+                          size: 25,
+                          color: kPrimaryColor,
+                        )),
+                  ],
+                ),
+                SizedBox(
+                  height: 20.h,
+                ),
+                Expanded(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        FormField(
+                          validator: (String? value) {
+                            if (controller.text.isEmpty) {
+                              return 'مطلوب';
+                            }
+                            return null;
+                          },
+                          builder: (FormFieldState state) {
+                            return Column(
+                              children: [
+                                TextField(
+                                  controller: controller,
+                                  cursorColor: Theme.of(context)
+                                      .textTheme
+                                      .bodySmall!
+                                      .color!,
+                                  textAlign: TextAlign.start,
+                                  maxLines: 1,
+                                  style: TextStyle(
+                                      color: Theme.of(context)
+                                          .textTheme
+                                          .bodySmall!
+                                          .color!,
+                                      fontFamily: kFontFamilyName,
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 18.sp,
+                                      height: 1.5),
+                                  autocorrect: false,
+                                  cursorHeight: 27.h,
+                                  cursorRadius: Radius.circular(100.r),
+                                  textAlignVertical: TextAlignVertical.center,
+                                  decoration: InputDecoration(
+                                    enabledBorder: const UnderlineInputBorder(
+                                        borderSide:
+                                            BorderSide(color: kGrayColor)),
+                                    focusedBorder: UnderlineInputBorder(
+                                        borderSide:
+                                            BorderSide(color: kPrimaryColor)),
+                                    label: Text(
+                                      hintText,
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(
+                                        color: state.hasError
+                                            ? kRedColor
+                                            : kGrayColor,
+                                        fontFamily: kFontFamilyName,
+                                        height: 0,
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 12.sp,
+                                      ),
+                                    ),
+                                    border: UnderlineInputBorder(
+                                        borderSide:
+                                            BorderSide(color: kPrimaryColor)),
+                                    contentPadding:
+                                        const EdgeInsets.only(top: 0),
+                                  ),
+                                ),
+                                const SizedBox(
+                                  height: 5,
+                                ),
+                                Text(
+                                  state.errorText ?? '',
+                                  style: TextStyle(
+                                      color: kRedColor, fontSize: 10.sp),
+                                ),
+                              ],
+                            );
+                          },
+                        ),
+                        Text(
+                          content,
+                          style: TextStyle(
+                            height: 1,
+                            fontSize: 13.sp,
+                            color: kLightBlackColor,
+                            fontFamily: kFontFamilyName,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                /*     const Spacer(),
+                      SizedBox(
+                        width: 1.sw,
+                        child: CustomFiledElevatedBtn(
+                          text: 'تم',
+                          color:
+                              Theme.of(context).primaryColor.withOpacity(.15),
+                          textColor: Theme.of(context).primaryColor,
+                          function: () {
+                            if (formKey.currentState!.validate()) {
+                              function();
+                            }
+                          },
+                          height: 50,
+                        ),
+                      ),*/
+              ],
+            )),
+      ),
     );
   }
 

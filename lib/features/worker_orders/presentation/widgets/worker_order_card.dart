@@ -13,13 +13,15 @@ import 'package:url_launcher/url_launcher.dart';
 import '../../../../constants/consts.dart';
 import '../../../../local_storage/shared_preferences.dart';
 import '../../../../utils/utils.dart';
-import '../../domain/models/order_api_model.dart';
+import '../../domain/models/worker_order_model.dart';
 import 'contacts_order_btn.dart';
 
 class WorkerOrderCard extends StatefulWidget {
-  const WorkerOrderCard({super.key, required this.workerOrderApiModel});
+  const WorkerOrderCard(
+      {super.key, required this.workerOrderModel, required this.function});
 
-  final WorkerOrderApiModel workerOrderApiModel;
+  final WorkerOrderModel workerOrderModel;
+  final VoidCallback function;
 
   @override
   State<WorkerOrderCard> createState() => _WorkerOrderCardState();
@@ -43,32 +45,27 @@ class _WorkerOrderCardState extends State<WorkerOrderCard> {
   }
 
   num getTotalOrderPrice() {
-    if (widget.workerOrderApiModel.productsInfo != null) {
-      return (widget.workerOrderApiModel.productsInfo?.deliveryCost ?? 0) +
-          widget.workerOrderApiModel.total;
-    } else {
-      return widget.workerOrderApiModel.total;
-    }
+    return widget.workerOrderModel.cost;
   }
 
   void launchWhatsApp() async {
     String url() {
       if (Platform.isIOS) {
         // add the [https]
-        return "whatsapp://wa.me/${widget.workerOrderApiModel.customerInfo == '0' ? widget.workerOrderApiModel.customerInfo.toString().replaceFirst('0', '+972') : '+972${widget..toString()}'}"; // new line
+        return "whatsapp://wa.me/${widget.workerOrderModel.customerInfo.phone.characters.first == '0' ? widget.workerOrderModel.customerInfo.phone.replaceFirst('0', '+972') : '+972${widget.workerOrderModel.customerInfo.phone}'}"; // new line
       } else {
         // add the [https]
-        return "whatsapp://send?phone=${widget.workerOrderApiModel.customerInfo == '0' ? widget.toString().replaceFirst('0', '+972') : '+972${widget..toString()}'}"; // new line
+        return "whatsapp://send?phone=${widget.workerOrderModel.customerInfo.phone.characters.first == '0' ? widget.toString().replaceFirst('0', '+972') : '+972${widget.workerOrderModel.customerInfo.phone.toString()}'}"; // new line
       }
     }
 
     String fallbackUrl() {
       if (Platform.isIOS) {
         // add the [https]
-        return "https://api.whatsapp.com/send?phone=${widget.toString().characters.first == '0' ? widget.toString().replaceFirst('0', '+972') : '+972${widget..toString()}'}"; // new line
+        return "https://api.whatsapp.com/send?phone=${widget.workerOrderModel.customerInfo.phone.characters.first == '0' ? widget.workerOrderModel.customerInfo.phone.replaceFirst('0', '+972') : '+972${widget.workerOrderModel.customerInfo.phone.toString()}'}"; // new line
       } else {
         // add the [https]
-        return "https://wa.me/${widget.toString().characters.first == '0' ? widget.toString().replaceFirst('0', '+972') : '+972${widget..toString()}'}"; // new line
+        return "https://wa.me/${widget.workerOrderModel.customerInfo.phone.characters.first == '0' ? widget.workerOrderModel.customerInfo.phone.replaceFirst('0', '+972') : '+972${widget.workerOrderModel.customerInfo.phone.toString()}'}"; // new line
       }
     }
 
@@ -95,24 +92,32 @@ class _WorkerOrderCardState extends State<WorkerOrderCard> {
         children: [
           Column(
             children: [
-              widget.workerOrderApiModel.service != null
-                  ? ServiceInfo(
-                      serviceOrderModel: widget.workerOrderApiModel.service!)
-                  : ListView.separated(
-                      shrinkWrap: true,
-                      physics: const NeverScrollableScrollPhysics(),
-                      padding: EdgeInsets.zero,
-                      itemBuilder: (context, index) {
-                        return OrderProductCard(
-                          product: widget.workerOrderApiModel.products[index],
-                        );
-                      },
-                      separatorBuilder: (context, index) {
-                        return const Divider(
-                          color: kDarkGrayColor,
-                        );
-                      },
-                      itemCount: widget.workerOrderApiModel.products.length),
+              Column(
+                children: [
+                  Text(
+                    Utils.stringToTimeOfDay(widget.workerOrderModel.startTime)
+                        .format(context),
+                    style: const TextStyle(
+                        fontSize: 35, fontWeight: FontWeight.w900),
+                  ),
+                  SizedBox(
+                    height: 3.h,
+                  ),
+                  Text(
+                    Utils.formatDateString(widget.workerOrderModel.date),
+                    style:
+                        TextStyle(fontSize: 14.sp, fontWeight: FontWeight.w900),
+                  ),
+                  SizedBox(
+                    height: 3.h,
+                  ),
+                  Text(
+                    widget.workerOrderModel.option,
+                    style:
+                        TextStyle(fontSize: 14.sp, fontWeight: FontWeight.w900),
+                  ),
+                ],
+              ),
               SizedBox(
                 height: 22.h,
               ),
@@ -138,22 +143,6 @@ class _WorkerOrderCardState extends State<WorkerOrderCard> {
                       SizedBox(
                         height: 13.h,
                       ),
-                      Visibility(
-                        visible:
-                            widget.workerOrderApiModel.productsInfo != null,
-                        child: Column(
-                          children: [
-                            Text(
-                              'تكلفة التوصيل',
-                              style: TextStyle(
-                                  fontSize: 16.sp, fontWeight: FontWeight.w500),
-                            ),
-                            SizedBox(
-                              height: 13.h,
-                            ),
-                          ],
-                        ),
-                      ),
                       Text(
                         'إجمالي الدفع',
                         style: TextStyle(
@@ -168,7 +157,7 @@ class _WorkerOrderCardState extends State<WorkerOrderCard> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        '#${widget.workerOrderApiModel.id}',
+                        '#${widget.workerOrderModel.id}',
                         style: TextStyle(
                             fontWeight: FontWeight.w700, fontSize: 16.sp),
                       ),
@@ -176,28 +165,12 @@ class _WorkerOrderCardState extends State<WorkerOrderCard> {
                         height: 13.h,
                       ),
                       Text(
-                        widget.workerOrderApiModel.paymentMethod,
+                        widget.workerOrderModel.paymentMethod,
                         style: TextStyle(
                             fontWeight: FontWeight.w700, fontSize: 16.sp),
                       ),
                       SizedBox(
                         height: 13.h,
-                      ),
-                      Visibility(
-                        visible:
-                            widget.workerOrderApiModel.productsInfo != null,
-                        child: Column(
-                          children: [
-                            Text(
-                              '${widget.workerOrderApiModel.productsInfo?.deliveryCost} ₪',
-                              style: TextStyle(
-                                  fontSize: 16.sp, fontWeight: FontWeight.w700),
-                            ),
-                            SizedBox(
-                              height: 13.h,
-                            ),
-                          ],
-                        ),
                       ),
                       Text(
                         '${getTotalOrderPrice()} ₪',
@@ -218,9 +191,9 @@ class _WorkerOrderCardState extends State<WorkerOrderCard> {
           ),
           CustomFiledElevatedBtn(
               function: () {},
-              color: Colors.amber.withOpacity(.1),
+              color: const Color(0xffF5EFD9),
               textColor: Theme.of(context).textTheme.bodySmall!.color!,
-              text: widget.workerOrderApiModel.customerInfo.toString()),
+              text: widget.workerOrderModel.customerInfo.address.toString()),
           SizedBox(
             height: 12.h,
           ),
@@ -228,15 +201,15 @@ class _WorkerOrderCardState extends State<WorkerOrderCard> {
             children: [
               OrderIconButton(
                 function: () async {
-                  if (!await launchUrl(
-                      Uri.parse("tel://${widget.toString()}"))) {
+                  if (!await launchUrl(Uri.parse(
+                      "tel://${widget.workerOrderModel.customerInfo.phone}"))) {
                     throw Exception(
-                        'Could not launch ${"tel://${widget.toString()}"}');
+                        'Could not launch ${"tel://${widget.workerOrderModel.customerInfo.phone}"}');
                   }
                 },
                 iconColor: kPrimaryColor,
                 imgUrl: 'assets/images/svgIcons/call_icon.svg',
-                buttonColor: kPrimaryColor.withOpacity(.1),
+                buttonColor: kLightPrimaryColor,
               ),
               SizedBox(
                 width: 10.h,
@@ -252,44 +225,15 @@ class _WorkerOrderCardState extends State<WorkerOrderCard> {
           SizedBox(
             height: 12.h,
           ),
-          CustomFiledElevatedBtn(function: () {}, text: 'اضغط هنا للذهاب')
+          CustomFiledElevatedBtn(
+            function: widget.function,
+            text: widget.workerOrderModel.status == 0
+                ? 'اضغط هنا للذهاب'
+                : 'تم تنفيذ الخدمة',
+            color: widget.workerOrderModel.status == 0 ? null : kBlackColor,
+          )
         ],
       ),
-    );
-  }
-}
-
-class ServiceInfo extends StatelessWidget {
-  const ServiceInfo({
-    super.key,
-    required this.serviceOrderModel,
-  });
-
-  final ServiceOrderModel serviceOrderModel;
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Text(
-          Utils.stringToTimeOfDay(serviceOrderModel.startTime).format(context),
-          style: const TextStyle(fontSize: 35, fontWeight: FontWeight.w900),
-        ),
-        SizedBox(
-          height: 3.h,
-        ),
-        Text(
-          Utils.formatDateString(serviceOrderModel.date),
-          style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.w900),
-        ),
-        SizedBox(
-          height: 3.h,
-        ),
-        Text(
-          serviceOrderModel.option,
-          style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.w900),
-        ),
-      ],
     );
   }
 }

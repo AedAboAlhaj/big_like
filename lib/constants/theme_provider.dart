@@ -3,7 +3,7 @@ import 'package:flutter/scheduler.dart';
 
 import 'consts.dart';
 
-class MyThemes   {
+class MyThemes {
   static final darkTheme = ThemeData(
       scaffoldBackgroundColor: kBlackColor,
       fontFamily: kFontFamilyName,
@@ -39,16 +39,19 @@ class MyThemes   {
         bodySmall: const TextStyle(color: kBlackColor),
         displaySmall: const TextStyle(color: kGrayColor)),
     iconTheme: const IconThemeData().copyWith(color: kBlackColor),
-    appBarTheme: const AppBarTheme().copyWith(color: kWhiteColor),
+    appBarTheme: const AppBarTheme().copyWith(
+      color: kWhiteColor,
+      surfaceTintColor: Colors.transparent,
+    ),
     cardColor: kLightGrayColor,
-    bottomSheetTheme:
-        const BottomSheetThemeData().copyWith(backgroundColor: kWhiteColor),
+    bottomSheetTheme: const BottomSheetThemeData()
+        .copyWith(backgroundColor: kWhiteColor, shadowColor: kWhiteColor),
     bottomNavigationBarTheme: const BottomNavigationBarThemeData(
       backgroundColor: kWhiteColor,
     ),
   );
   ThemeMode themeMode = ThemeMode.system;
-  // bool get isDarkMode => themeMode == ThemeMode.dark;
+
   static bool isDarkMode() {
     var brightness =
         SchedulerBinding.instance.platformDispatcher.platformBrightness;

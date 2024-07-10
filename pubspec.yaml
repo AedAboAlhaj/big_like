@@ -57,6 +57,8 @@ dependencies:
   animated_flip_counter: ^0.3.4
   another_flushbar: ^1.12.30
   syncfusion_flutter_datepicker: ^26.1.40
+  flutter_datetime_picker_plus: ^2.2.0
+
 
 
 dev_dependencies:
@@ -102,6 +104,7 @@ flutter:
     - assets/images/svgIcons/qrScan_icon.svg
     - assets/images/svgIcons/whatsapp_icon.svg
     - assets/images/svgIcons/call_icon.svg
+    - assets/images/svgIcons/profile.svg
 
 
   # An image asset can refer to one or more resolution-specific "variants", see

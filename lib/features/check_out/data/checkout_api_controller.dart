@@ -72,7 +72,6 @@ class CheckoutApiController {
     } catch (e) {
       return [];
     }
-
     if (response.statusCode == 200) {
       var jsonObject = jsonDecode(response.body);
 

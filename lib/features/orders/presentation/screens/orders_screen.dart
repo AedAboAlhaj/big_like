@@ -26,6 +26,9 @@ class _OrdersScreenState extends State<OrdersScreen>
   final OrdersApiController _ordersApiController = OrdersApiController();
 
   late final OrderBloc orderBloc;
+  int _selectedPage = 0;
+  double _right = 1;
+  double _left = (1.sw / 2) - 20.w;
 
   @override
   void initState() {
@@ -55,10 +58,12 @@ class _OrdersScreenState extends State<OrdersScreen>
   }
 
   Future<void> _pullRefresh() async {
-    // orderBloc.ordersList.clear();
-    // orderBloc.ordersList = await _ordersApiController.getUserOrders();
-    // setState(() {});
-    orderBloc.add(OrdersFetched());
+    orderBloc.ordersList.clear();
+    orderBloc.ordersList = await _ordersApiController.getUserOrders();
+
+    if (mounted) {
+      context.read<OrderCubit>().updateScreen(screenNum: _selectedPage);
+    }
   }
 
   @override
@@ -132,9 +137,22 @@ class _OrdersScreenState extends State<OrdersScreen>
                         child: PageView(
                           controller: _pageController,
                           onPageChanged: (val) {
-                            context
-                                .read<OrderCubit>()
-                                .updateScreen(screenNum: val);
+                            _selectedPage = val;
+                            if (val == 0) {
+                              _left = (1.sw / 2) - 20.w;
+                              _right = 1;
+                              context
+                                  .read<OrderCubit>()
+                                  .updateScreen(screenNum: _selectedPage);
+                            } else {
+                              _left = 1;
+                              _right = (1.sw / 2) - 20.w;
+                              context
+                                  .read<OrderCubit>()
+                                  .updateScreen(screenNum: _selectedPage);
+                            }
+
+                            // _pullRefresh();
                           },
                           children: [
                             orderBloc.ordersList
@@ -175,8 +193,20 @@ class _OrdersScreenState extends State<OrdersScreen>
                                             .toList()
                                             .length),
                                   )
-                                : const Center(
-                                    child: Text('لا يوجد لديك طلبات جديدة')),
+                                : RefreshIndicator(
+                                    onRefresh: _pullRefresh,
+                                    color: kPrimaryColor,
+                                    child: ListView(
+                                      children: [
+                                        Container(
+                                            alignment: Alignment.center,
+                                            height: 1.sh / 2,
+                                            width: 1.sw,
+                                            child: const Text(
+                                                'لا يوجد لديك طلبات جديدة')),
+                                      ],
+                                    ),
+                                  ),
                             orderBloc.ordersList
                                     .where((element) =>
                                         element.status == 2 ||
@@ -217,11 +247,120 @@ class _OrdersScreenState extends State<OrdersScreen>
                                             .toList()
                                             .length),
                                   )
-                                : const Center(
-                                    child: Text('لا يوجد لديك طلبات سابقة')),
+                                : RefreshIndicator(
+                                    onRefresh: _pullRefresh,
+                                    color: kPrimaryColor,
+                                    child: ListView(
+                                      children: [
+                                        Container(
+                                          alignment: Alignment.center,
+                                          height: 1.sh / 2,
+                                          width: 1.sw,
+                                          child: const Center(
+                                              child: Text(
+                                                  'لا يوجد لديك طلبات سابقة')),
+                                        )
+                                      ],
+                                    ),
+                                  ),
                           ],
                         )),
                     Positioned(
+                      right: 15,
+                      left: 15,
+                      top: 10,
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: Theme.of(context).cardColor,
+                          borderRadius: kBorderRadius5,
+                        ),
+                        clipBehavior: Clip.antiAlias,
+                        alignment: Alignment.center,
+                        height: 43.h,
+                        // padding: const EdgeInsets.all(2),
+                        child: Stack(
+                          alignment: Alignment.center,
+                          children: [
+                            AnimatedPositioned(
+                                right: _right,
+                                left: _left,
+                                curve: Curves.easeInOut,
+                                duration: const Duration(milliseconds: 100),
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                    color: kPrimaryColor,
+                                    borderRadius: kBorderRadius5,
+                                  ),
+                                  width: (1.sw / 2) - 20.w,
+                                  height: 50.h,
+                                  // padding: EdgeInsets.symmetric(
+                                  //     vertical: 12.h, horizontal: 31.w),
+                                )),
+                            Positioned.fill(
+                                child: Row(
+                              children: [
+                                Expanded(
+                                    child: InkWell(
+                                  onTap: () {
+                                    setState(() {
+                                      _selectedPage = 0;
+                                      _left = (1.sw / 2) - 20.w;
+                                      _right = 1;
+                                    });
+                                    _pageController.animateTo(0,
+                                        duration:
+                                            const Duration(milliseconds: 190),
+                                        curve: Curves.easeInOut);
+                                  },
+                                  child: Text(
+                                    'طلبات مفتوحة',
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                        color: _selectedPage == 0
+                                            ? kWhiteColor
+                                            : kBlackColor,
+                                        fontWeight: _selectedPage == 0
+                                            ? FontWeight.w800
+                                            : FontWeight.bold,
+                                        fontSize: 17.sp),
+                                  ),
+                                )),
+                                SizedBox(
+                                  width: 10.w,
+                                ),
+                                Expanded(
+                                    child: InkWell(
+                                  onTap: () {
+                                    setState(() {
+                                      _selectedPage = 1;
+                                      _left = 1;
+                                      _right = (1.sw / 2) - 20.w;
+                                    });
+                                    _pageController.animateToPage(1,
+                                        duration:
+                                            const Duration(milliseconds: 190),
+                                        curve: Curves.easeInOut);
+                                  },
+                                  child: Text(
+                                    'طلبات سابقة',
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                        color: _selectedPage == 1
+                                            ? kWhiteColor
+                                            : kBlackColor,
+                                        fontWeight: _selectedPage == 0
+                                            ? FontWeight.w800
+                                            : FontWeight.bold,
+                                        fontSize: 17.sp),
+                                  ),
+                                )),
+                              ],
+                            ))
+                          ],
+                        ),
+                      ),
+                    )
+                    /*   Positioned(
                         right: 0,
                         left: 0,
                         top: 10,
@@ -311,7 +450,7 @@ class _OrdersScreenState extends State<OrdersScreen>
                               ),
                             ],
                           ),
-                        ))
+                        ))*/
                   ],
                 );
               },

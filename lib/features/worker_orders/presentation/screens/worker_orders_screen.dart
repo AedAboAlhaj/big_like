@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:big_like/features/orders/bloc/order_bloc.dart';
+import 'package:big_like/utils/helpers.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -10,7 +11,7 @@ import '../../../../constants/consts.dart';
 import '../../../../local_storage/shared_preferences.dart';
 import '../../../../utils/utils.dart';
 import '../../data/worker_orders_api_controller.dart';
-import '../../domain/models/order_api_model.dart';
+import '../../domain/models/worker_order_model.dart';
 import '../widgets/worker_order_card.dart';
 
 class WorkerOrdersScreen extends StatefulWidget {
@@ -21,13 +22,13 @@ class WorkerOrdersScreen extends StatefulWidget {
 }
 
 class _WorkerOrdersScreenState extends State<WorkerOrdersScreen>
-    with WidgetsBindingObserver {
+    with WidgetsBindingObserver, Helpers {
   late PageController _pageController;
-  late Future<List<WorkerOrderApiModel>> _future;
+  late Future<List<WorkerOrderModel>> _future;
   final WorkerOrdersApiController _workerOrdersApiController =
       WorkerOrdersApiController();
 
-  List<WorkerOrderApiModel> workerOrdersList = [];
+  List<WorkerOrderModel> workerOrdersList = [];
 
   @override
   void initState() {
@@ -55,8 +56,24 @@ class _WorkerOrdersScreenState extends State<WorkerOrdersScreen>
 
   Future<void> _pullRefresh() async {
     workerOrdersList.clear();
-    _future = _workerOrdersApiController.getWorkerOrders();
+    workerOrdersList = await _workerOrdersApiController.getWorkerOrders();
     setState(() {});
+  }
+
+  void updateOrderStatus(orderId) async {
+    onLoading(context, () {});
+    bool status =
+        await _workerOrdersApiController.updateOrderStatus(orderId: orderId);
+    if (status) {
+      await _pullRefresh();
+    } else {
+      showSnackBar(context,
+          massage: 'حدث خطأ أعد المحاولة في وقت لاحق', error: true);
+    }
+
+    if (context.mounted) {
+      Navigator.pop(context);
+    }
   }
 
   @override
@@ -102,7 +119,6 @@ class _WorkerOrdersScreenState extends State<WorkerOrdersScreen>
           (Connectivity().checkConnectivity()),
         ]),
         builder: (BuildContext context, AsyncSnapshot snapshot) {
-          print(snapshot);
           if (snapshot.hasData) {
             if (workerOrdersList.isEmpty) {
               workerOrdersList = snapshot.data[0];
@@ -137,7 +153,11 @@ class _WorkerOrdersScreenState extends State<WorkerOrdersScreen>
                                 shrinkWrap: true,
                                 itemBuilder: (context, index) {
                                   return WorkerOrderCard(
-                                    workerOrderApiModel: workerOrdersList
+                                    function: () {
+                                      updateOrderStatus(
+                                          workerOrdersList[index].id);
+                                    },
+                                    workerOrderModel: workerOrdersList
                                         .where((element) =>
                                             element.status != 2 &&
                                             element.status != 3)

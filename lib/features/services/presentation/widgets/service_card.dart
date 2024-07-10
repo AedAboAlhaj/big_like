@@ -27,7 +27,10 @@ class ServiceCard extends StatelessWidget {
           decoration: BoxDecoration(
             borderRadius: kBorderRadius,
           ),
-          child: CustomNetworkImage(imageUrl: serviceModel.image)),
+          child: CustomNetworkImage(
+            imageUrl: serviceModel.image,
+            imageHeight: 203,
+          )),
     );
   }
 }

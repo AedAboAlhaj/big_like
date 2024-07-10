@@ -5,6 +5,7 @@ import 'package:big_like/local_storage/shared_preferences.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 import '../../../../common_widgets/shimmer_effect.dart';
@@ -74,73 +75,111 @@ class _SettingsScreenState extends State<SettingsScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _pagesList.isEmpty
-              ? FutureBuilder(
-                  future: Future.wait([
-                    _future,
-                    (Connectivity().checkConnectivity()),
-                    AppSecureStorage().getToken()
-                  ]),
-                  builder: (context, AsyncSnapshot snapshot) {
-                    switch (snapshot.connectionState) {
-                      case ConnectionState.none:
-                      case ConnectionState.active:
-                      case ConnectionState.waiting:
-                        return const ShimmerEffect(
-                            content: ComPageSimmerScreen());
-                      case ConnectionState.done:
-                        if (snapshot.hasData) {
-                          _pagesList = snapshot.data[0];
+          SizedBox(
+            height: 10.h,
+          ),
+          FutureBuilder(
+              future: Future.wait([
+                AppSecureStorage().getToken(),
+                AppSecureStorage().getPhone(),
+                AppSecureStorage().getUserName(),
+              ]),
+              builder: (context, AsyncSnapshot snapshot) {
+                switch (snapshot.connectionState) {
+                  case ConnectionState.none:
+                  case ConnectionState.active:
+                  case ConnectionState.waiting:
+                  case ConnectionState.done:
+                    if (snapshot.hasData) {
+                      final token = snapshot.data[0];
+                      final phone = snapshot.data[1];
+                      final userName = snapshot.data[2];
 
-                          _connectivityResult = snapshot.data[1];
-                          if (_connectivityResult
-                                  .contains(ConnectivityResult.mobile) ||
-                              _connectivityResult
-                                  .contains(ConnectivityResult.wifi)) {
-                            // Utils.checkNetwork(
-                            //     context: context, function: _update);
-                            return RefreshIndicator(
-                                onRefresh: _pullRefresh,
-                                key: _errorIndicator,
-                                color: kPrimaryColor,
-                                child: Container());
-                          }
-                          return ListView.separated(
-                            scrollDirection: Axis.vertical,
-                            itemCount: _pagesList.length,
-                            shrinkWrap: true,
-                            physics: const NeverScrollableScrollPhysics(),
-                            itemBuilder: (context, index) {
-                              return CamPagesTitleCard(
-                                comProfilePagesModel: _pagesList[index],
-                              );
-                            },
-                            separatorBuilder: (context, index) {
-                              return SizedBox(
-                                height: 10.h,
-                              );
-                            },
-                          );
-                        }
+                      return Visibility(
+                        visible: token != null,
+                        child: Column(
+                          children: [
+                            SizedBox(
+                              width: 1.sw,
+                              child: Column(
+                                children: [
+                                  Text(userName ?? '',
+                                      style: TextStyle(
+                                        fontSize: 22.sp,
+                                        color: Theme.of(context)
+                                            .textTheme
+                                            .bodySmall!
+                                            .color!,
+                                        fontWeight: FontWeight.w700,
+                                      )),
+                                  Text(phone ?? '',
+                                      style: TextStyle(
+                                        fontSize: 15.sp,
+                                        color: kGrayColor,
+                                        fontWeight: FontWeight.w700,
+                                      )),
+                                ],
+                              ),
+                            ),
+                            SizedBox(
+                              height: 10.h,
+                            ),
+                          ],
+                        ),
+                      );
                     }
-                    return Container();
-                  })
-              : ListView.separated(
-                  scrollDirection: Axis.vertical,
-                  itemCount: _pagesList.length,
-                  shrinkWrap: true,
-                  physics: const NeverScrollableScrollPhysics(),
-                  itemBuilder: (context, index) {
-                    return CamPagesTitleCard(
-                      comProfilePagesModel: _pagesList[index],
-                    );
-                  },
-                  separatorBuilder: (context, index) {
-                    return SizedBox(
-                      height: 10.h,
-                    );
-                  },
-                ),
+                }
+                return Container();
+              }),
+          FutureBuilder(
+              future: Future.wait([
+                _future,
+                (Connectivity().checkConnectivity()),
+              ]),
+              builder: (context, AsyncSnapshot snapshot) {
+                switch (snapshot.connectionState) {
+                  case ConnectionState.none:
+                  case ConnectionState.active:
+                  case ConnectionState.waiting:
+                    return const ShimmerEffect(content: ComPageSimmerScreen());
+                  case ConnectionState.done:
+                    if (snapshot.hasData) {
+                      _pagesList = snapshot.data[0];
+
+                      _connectivityResult = snapshot.data[1];
+
+                      if (_connectivityResult
+                              .contains(ConnectivityResult.mobile) ||
+                          _connectivityResult
+                              .contains(ConnectivityResult.wifi)) {
+                        // Utils.checkNetwork(
+                        //     context: context, function: _update);
+                        return RefreshIndicator(
+                            onRefresh: _pullRefresh,
+                            key: _errorIndicator,
+                            color: kPrimaryColor,
+                            child: Container());
+                      }
+                      return ListView.separated(
+                        scrollDirection: Axis.vertical,
+                        itemCount: _pagesList.length,
+                        shrinkWrap: true,
+                        physics: const NeverScrollableScrollPhysics(),
+                        itemBuilder: (context, index) {
+                          return CamPagesTitleCard(
+                            comProfilePagesModel: _pagesList[index],
+                          );
+                        },
+                        separatorBuilder: (context, index) {
+                          return SizedBox(
+                            height: 10.h,
+                          );
+                        },
+                      );
+                    }
+                }
+                return Container();
+              }),
           SizedBox(
             height: 10.h,
           ),
@@ -153,68 +192,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
           SizedBox(
             height: 10.h,
           ),
-          /*  Container(
-            color: Theme.of(context).cardColor,
-            child: ListTile(
-              onTap: () {
-                Get.changeThemeMode(
-                  Get.isDarkMode ? ThemeMode.light : ThemeMode.dark,
-                );
-                AppSharedPref().saveThemeMode(
-                  theme: !Get.isDarkMode ? 'lightTheme' : 'darkTheme',
-                );
-              },
-              contentPadding:
-                  EdgeInsets.symmetric(horizontal: 32.w, vertical: 0),
-              horizontalTitleGap: 0,
-              minVerticalPadding: 0,
-              tileColor: Theme.of(context).cardColor,
-              trailing: Directionality(
-                textDirection: TextDirection.ltr,
-                child: YakoThemeSwitch(
-                  enabled: !Get.isDarkMode,
-                  disabledToggleColor: Theme.of(context).primaryColor,
-                  enabledBackgroundColor: kWhiteColor,
-                  disabledBackgroundColor: kBlackColor,
-                  // enabledToggleColor: Theme.of(context).textTheme.bodySmall!.color!,
-                  // disabledToggleColor: Theme.of(context).textTheme.bodySmall!.color!,
-                  width: 50.w,
-                  onChanged: ({bool? changed}) async {
-                    Get.changeThemeMode(
-                      changed! ? ThemeMode.light : ThemeMode.dark,
-                    );
-                    AppSharedPref().saveThemeMode(
-                      theme: changed ? 'lightTheme' : 'darkTheme',
-                    );
-                    // Get.changeThemeMode(
-                    //     Get.isDarkMode ? ThemeMode.light : ThemeMode.dark);
-                    // await Get.forceAppUpdate();
-                    // Get.changeTheme(
-                    //   changed ?? true
-                    //       ? MyThemes.lightTheme
-                    //       : MyThemes.darkTheme,
-                    // );
-                  },
-                ),
-              ),
-              leading: Icon(Icons.autorenew_rounded,
-                  color: Theme.of(context).textTheme.bodySmall!.color),
-              title: Text(
-                  Get.isDarkMode
-                      ? _translationGetXController.trans['light_mode'] ??
-                          'الوضع النهاري'
-                      : _translationGetXController.trans['night_mode'] ??
-                          'الوضع الليلي',
-                  style: TextStyle(
-                    fontSize: 15.sp,
-                    fontWeight: FontWeight.w600,
-                    color: Theme.of(context).textTheme.bodySmall!.color!,
-                  )),
-            ),
-          ),
-          SizedBox(
-            height: 10.h,
-          ),*/
           Container(
             color: Theme.of(context).cardColor,
             child: ListTile(
@@ -462,7 +439,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       content: 'هل انت متاكد انك تريد تسجيل الخروج؟',
                       function: () {
                         AppSecureStorage().clean();
-                        AppSharedPref().clear();
+                        AppSharedPref().saveUserType(userType: '');
                         Navigator.pushAndRemoveUntil(
                             context,
                             MaterialPageRoute(

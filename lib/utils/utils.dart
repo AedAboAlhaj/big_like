@@ -13,6 +13,13 @@ class Utils {
     return ColorFilter.mode(color, BlendMode.srcIn);
   }
 
+  static String getTimeText(TimeOfDay? time) {
+    if (time != null) {
+      return '${time.hour <= 9 ? '0${time.hour}' : time.hour}:${time.minute <= 9 ? '0${time.minute}' : time.minute.toString()}';
+    }
+    return '';
+  }
+
   static TimeOfDay stringToTimeOfDay(String time) {
     // Parse the time from the string
     DateFormat format = DateFormat.Hm(); // for 24 hour format
@@ -36,6 +43,11 @@ class Utils {
   static String formatDateTime(DateTime? dt) {
     // Format the DateTime object into MM.DD.YY format
     return dt != null ? DateFormat('MM.dd.yy\nhh:mm').format(dt) : '';
+  }
+
+  static String toStringApiDateTime(DateTime? dt) {
+    // Format the DateTime object into MM.DD.YY format
+    return dt != null ? DateFormat('y-MM-dd').format(dt) : '';
   }
 
   static Future<void> checkNetwork(

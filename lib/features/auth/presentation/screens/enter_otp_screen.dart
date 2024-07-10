@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:big_like/local_storage/secure_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../../common_widgets/custom_filed_elevated_btn.dart';
@@ -9,6 +10,7 @@ import '../../../../constants/consts.dart';
 import '../../../../local_storage/shared_preferences.dart';
 import '../../../../utils/helpers.dart';
 import '../../../../utils/utils.dart';
+import '../../../home/blocs/app_cubit.dart';
 import '../../../home/presentation/screens/main_screen.dart';
 import '../../data/auth_api_controller.dart';
 import '../../domain/models/user_api_model.dart';
@@ -283,12 +285,15 @@ class _EnterOtpScreenState extends State<EnterOtpScreen> with Helpers {
     if (userData != null) {
       await AppSecureStorage().setToken(userData.token);
       await AppSecureStorage().setPhone(userData.phone);
+      await AppSecureStorage().setUserName(userData.name);
 
       await AppSharedPref().saveUserType(userType: userData.type);
 
       if (mounted) {
         Navigator.pop(context);
-
+        context
+            .read<AppCubit>()
+            .updateScreen(screenName: 'WorkerOrdersScreen', screenNum: 0);
         Navigator.pushAndRemoveUntil(
             context,
             MaterialPageRoute(

@@ -147,6 +147,7 @@ class _SelectPaymentMethodState extends State<SelectPaymentMethod>
         } else {
           if (mounted) {
             Navigator.pop(context);
+            checkoutBloc.clearOrder();
             Navigator.pushNamedAndRemoveUntil(
                 context, '/thank_you_screen', (route) => false);
           }

@@ -37,8 +37,8 @@ class ServiceModel {
 
   late final int id;
   late final String name;
-  late final String image;
-  late final String cover;
+  late final String? image;
+  late final String? cover;
   late final String? description;
   late final List<Countries> countries;
   late final List<Options> options;
@@ -109,7 +109,7 @@ class Children {
 
   Children.fromJson(Map<String, dynamic> json) {
     id = json['id'];
-    name = json['name'];
+    name = json['name'] ?? '';
   }
 
   Map<String, dynamic> toJson() {
@@ -143,8 +143,8 @@ class Options {
   Options.fromJson(Map<String, dynamic> json) {
     id = json['id'] ?? 2;
     name = json['name'];
-    desc = json['desc'];
-    fullDesc = json['full_desc'];
+    desc = json['desc'] ?? '';
+    fullDesc = json['full_desc'] ?? '';
     cost = json['cost'];
     hours = json['hours'];
     discount = json['discount'];

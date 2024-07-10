@@ -18,6 +18,10 @@ class CheckoutBloc extends Bloc<CheckoutEvent, CheckoutState> {
   SendOrderModel sendOrderModel = SendOrderModel();
   CheckoutApiController checkoutApiController = CheckoutApiController();
 
+  void clearOrder() {
+    sendOrderModel = SendOrderModel();
+  }
+
   num getTotalPrice() {
     num total = 0;
     if (sendOrderModel.products.isEmpty) {
@@ -31,13 +35,13 @@ class CheckoutBloc extends Bloc<CheckoutEvent, CheckoutState> {
     }
   }
 
-  void _getScheduleList(
-      ScheduleFetched event, Emitter<CheckoutState> emit) async {
+  void _getScheduleList(ScheduleFetched event,
+      Emitter<CheckoutState> emit) async {
     emit(ScheduleLoading());
 
     try {
       final datesList =
-          await checkoutApiController.getSchedule(optionId: event.optionId);
+      await checkoutApiController.getSchedule(optionId: event.optionId);
 
       emit(ScheduleSuccess(datesList: datesList));
     } catch (e) {

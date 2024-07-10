@@ -8,9 +8,10 @@ import '../../domain/models/company_profile_page_api_model.dart';
 import 'package:html/dom.dart' as dom;
 
 class CamProfilePageModel extends StatelessWidget {
-  const CamProfilePageModel({super.key, required this.comProfilePagesModel});
+  const CamProfilePageModel(
+      {super.key, required this.companyProfilePageApiModel});
 
-  final CompanyProfilePageApiModel comProfilePagesModel;
+  final CompanyProfilePageApiModel companyProfilePageApiModel;
 
   void launchTextUrl(String? textUrl) async {
     var url = Uri.parse(textUrl ?? "");
@@ -28,13 +29,13 @@ class CamProfilePageModel extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ModelScreen(
-        screenTitle: comProfilePagesModel.defaultTitle,
+        screenTitle: companyProfilePageApiModel.defaultTitle,
         bodyWidget: SingleChildScrollView(
           padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 20.h),
           scrollDirection: Axis.vertical,
           child: Html(
               shrinkWrap: true,
-              data: comProfilePagesModel.defaultDescription,
+              data: companyProfilePageApiModel.defaultDescription,
               style: {
                 "p": Style(fontFamily: kFontFamilyName),
               },

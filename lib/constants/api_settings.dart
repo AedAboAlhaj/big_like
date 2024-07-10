@@ -17,4 +17,7 @@ class ApiSettings {
   static const String companyProfilePages = '${_baseUrl}customers/definitions';
   static const String products = '${_baseUrl}customers/products';
   static const String banners = '${_baseUrl}customers/banners';
+  static const String workersSchedule = '${_baseUrl}workers/schedule';
+  static const String workersOrders = '${_baseUrl}workers/orders';
+  static const String workersOrdersStatus = '${_baseUrl}workers/orders/status';
 }

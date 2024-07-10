@@ -8,7 +8,8 @@ class BannerCard extends StatelessWidget {
   final BannerApiModel bannerModel;
 
   const BannerCard({
-    super.key, required this.bannerModel,
+    super.key,
+    required this.bannerModel,
     /* required this.list*/
   });
 
@@ -148,13 +149,14 @@ class BannerCard extends StatelessWidget {
       },
       child: Container(
         height: 180.h,
-        margin: EdgeInsets.symmetric(horizontal: 20.w),
+        margin: EdgeInsets.symmetric(horizontal: 15.w),
         decoration: BoxDecoration(
           borderRadius: kBorderRadius,
         ),
         clipBehavior: Clip.antiAlias,
         width: double.infinity,
         child: CustomNetworkImage(
+          imageHeight: 180,
           imageUrl: bannerModel.image,
         ),
       ),

@@ -1,26 +1,46 @@
-class WorkTimesModel {
-  WorkTimesModel({
+import 'package:big_like/utils/utils.dart';
+import 'package:flutter/material.dart';
+
+class WorkDayModel {
+  WorkDayModel({
     this.id,
-    required this.startTime,
-    required this.endTime,
+    required this.dayNum,
+    required this.day,
+    required this.times,
   });
 
   int? id;
-  late String startTime;
-  late String endTime;
-  late num cost;
+  int dayNum;
+  String day;
+  List<WorkTimesModel> times;
+}
+
+class WorkTimesModel {
+  WorkTimesModel({
+    required this.startTime,
+    required this.endTime,
+    required this.dayNum,
+    required this.id,
+  });
+
+  TimeOfDay? startTime;
+  TimeOfDay? endTime;
+  late int dayNum;
+  int? id;
 
   WorkTimesModel.fromJson(Map<String, dynamic> json) {
     id = json['id'];
-    startTime = json['start_time'];
-    endTime = json['end_time'];
+    startTime = Utils.stringToTimeOfDay(json['start_time']);
+    endTime = Utils.stringToTimeOfDay(json['end_time']);
+    dayNum = json['day'];
   }
 
   Map<String, dynamic> toJson() {
     final data = <String, dynamic>{};
     data['id'] = id;
-    data['start_time'] = startTime;
-    data['end_time'] = endTime;
+    data['start_time'] = Utils.getTimeText(startTime);
+    data['end_time'] = Utils.getTimeText(endTime);
+    data['day'] = dayNum;
     return data;
   }
 }
@@ -36,13 +56,13 @@ class HollyDaysModel {
 
   HollyDaysModel.fromJson(Map<String, dynamic> json) {
     id = json['id'];
-    date = json['date'];
+    date = DateTime.parse(json['date']);
   }
 
   Map<String, dynamic> toJson() {
     final data = <String, dynamic>{};
     data['id'] = id;
-    data['id'] = date;
+    data['date'] = Utils.toStringApiDateTime(date);
     return data;
   }
 }

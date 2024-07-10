@@ -43,7 +43,7 @@ class _MainScreenState extends State<MainScreen> {
     // TODO: implement initState
     super.initState();
     appCubit = BlocProvider.of<AppCubit>(context);
-    if (AppSharedPref().userType == 'customer') {
+    if (AppSharedPref().userType != 'worker') {
       _widgetOptions = const <Widget>[
         HomeScreen(),
         OrdersScreen(),
@@ -67,7 +67,7 @@ class _MainScreenState extends State<MainScreen> {
           child: Padding(
               padding: EdgeInsets.only(left: 20.w, right: 20.w),
               child: AppBar(
-                elevation: 0,
+                // elevation: 0,
                 iconTheme: IconThemeData(
                     color: Theme.of(context).appBarTheme.backgroundColor,
                     size: 35.h),
@@ -107,7 +107,7 @@ class _MainScreenState extends State<MainScreen> {
         child: Row(
             crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: AppSharedPref().userType == 'customer'
+            children: AppSharedPref().userType != 'worker'
                 ? customerNavigationBarIcons(context)
                 : workersNavigationBarIcons(context)),
       ),
@@ -190,7 +190,7 @@ class _MainScreenState extends State<MainScreen> {
       ),
       BottomNavigationBarIcon(
         title: 'بروفايل',
-        imageUrl: 'assets/images/svgIcons/like_icon.svg',
+        imageUrl: 'assets/images/svgIcons/profile.svg',
         pageNumber: 2,
         screenText: 'AchievementsScreen',
         function: () {

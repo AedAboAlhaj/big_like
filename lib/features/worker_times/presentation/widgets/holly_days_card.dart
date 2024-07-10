@@ -1,8 +1,10 @@
 import 'dart:ui';
 
 import 'package:big_like/common_widgets/custom_filed_elevated_btn.dart';
+import 'package:big_like/features/worker_times/bloc/hollydays_cubit.dart';
 import 'package:big_like/features/worker_times/presentation/widgets/time_input_field.dart';
 import 'package:flutter/material.dart' hide DatePickerTheme;
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:syncfusion_flutter_datepicker/datepicker.dart';
@@ -13,10 +15,7 @@ import '../../domain/models/work_times_model.dart';
 class HollyDaysCard extends StatefulWidget {
   const HollyDaysCard({
     super.key,
-    required this.workerHollyDaysList,
   });
-
-  final List<HollyDaysModel> workerHollyDaysList;
 
   @override
   State<HollyDaysCard> createState() => _HollyDaysCardState();
@@ -27,10 +26,7 @@ class _HollyDaysCardState extends State<HollyDaysCard> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    times = widget.workerHollyDaysList;
   }
-
-  List<HollyDaysModel> times = [];
 
   @override
   Widget build(BuildContext context) {
@@ -38,54 +34,62 @@ class _HollyDaysCardState extends State<HollyDaysCard> {
   }
 
   Widget buildTableRowExpanded() {
-    return Container(
-      child: Column(
-        children: [
-          /*  Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: <Widget>[
-              Text(
-                _dateFormatterDisPlay(date),
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontSize: 18.sp,
-                  color: kBlackColor,
-                  fontWeight: FontWeight.w500,
-                ),
+    return Column(
+      children: [
+        /*  Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: <Widget>[
+            Text(
+              _dateFormatterDisPlay(date),
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontSize: 18.sp,
+                color: kBlackColor,
+                fontWeight: FontWeight.w500,
               ),
-              const Icon(Icons.keyboard_arrow_down_rounded)
+            ),
+            const Icon(Icons.keyboard_arrow_down_rounded)
+          ],
+        ),
+        SizedBox(
+          height: 10.h,
+        ),*/
+        Container(
+          padding: const EdgeInsets.symmetric(horizontal: 20),
+          child: Column(
+            children: [
+              BlocBuilder<HollyDaysCubit, List<HollyDaysModel>>(
+                // body: BlocBuilder<TodoCubit, List<TodoModel>>(
+                builder: (context, daysList) {
+                  return ListView.builder(
+                    itemCount: daysList.length,
+                    shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
+                    itemBuilder: (BuildContext context, int index) {
+                      return workTimeCostRow(
+                        daysList[index],
+                      );
+                    },
+                  );
+                },
+              ),
+              SizedBox(
+                height: 10.h,
+              ),
+              CustomFiledElevatedBtn(
+                  function: () {
+                    context.read<HollyDaysCubit>().addHollyDay(HollyDaysModel(
+                          date: DateTime.now().add(const Duration(days: 1)),
+                        ));
+                  },
+                  text: '+ إضافة تاريخ جديد',
+                  textColor: kBlackColor,
+                  color: kLightGrayColor,
+                  height: 50),
             ],
           ),
-          SizedBox(
-            height: 10.h,
-          ),*/
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 20),
-            child: Column(
-              children: [
-                ...times.map((e) => workTimeCostRow(
-                      e,
-                    )),
-                SizedBox(
-                  height: 10.h,
-                ),
-                CustomFiledElevatedBtn(
-                    function: () {
-                      setState(() {
-                        times.add(HollyDaysModel(
-                          date: DateTime.now(),
-                        ));
-                      });
-                    },
-                    text: '+ إضافة تاريخ جديد',
-                    textColor: kBlackColor,
-                    color: kLightGrayColor,
-                    height: 50),
-              ],
-            ),
-          )
-        ],
-      ),
+        )
+      ],
     );
   }
 
@@ -133,17 +137,13 @@ class _HollyDaysCardState extends State<HollyDaysCard> {
                   ),
                   child: IconButton(
                     onPressed: () {
-                      // if (specialTime.id != null) {
-                      //   authApiController.deleteWorkCostEmployee(
-                      //       id: specialTime.id!);
-                      // }
-                      setState(() {
-                        times.remove(hollyDaysModel);
-                      });
+                      context
+                          .read<HollyDaysCubit>()
+                          .removeHollyDay(hollyDaysModel);
                     },
                     icon: const Icon(
-                      Icons.delete,
-                      size: 28,
+                      Icons.close,
+                      size: 35,
                     ),
                     color: kRedColor,
                   ),

@@ -11,9 +11,9 @@ class CompanyProfilePageApiModel {
   late final int id;
   late final bool status;
   late final String defaultTitle;
-  late final Title title;
+  late final Title? title;
   late final String defaultDescription;
-  late final Description description;
+  late final Description? description;
 
   CompanyProfilePageApiModel.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -22,17 +22,6 @@ class CompanyProfilePageApiModel {
     title = Title.fromJson(json['title']);
     defaultDescription = json['default_description'];
     description = Description.fromJson(json['description']);
-  }
-
-  Map<String, dynamic> toJson() {
-    final data = <String, dynamic>{};
-    data['id'] = id;
-    data['status'] = status;
-    data['default_title'] = defaultTitle;
-    data['title'] = title.toJson();
-    data['default_description'] = defaultDescription;
-    data['description'] = description.toJson();
-    return data;
   }
 }
 

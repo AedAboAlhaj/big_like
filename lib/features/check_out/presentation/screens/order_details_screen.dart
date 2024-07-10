@@ -1,13 +1,17 @@
 import 'dart:ui';
+import 'package:big_like/common_widgets/web_viewer_screen.dart';
 import 'package:big_like/features/check_out/bloc/checkout_bloc.dart';
 import 'package:big_like/features/check_out/presentation/screens/select_payment_method.dart';
+import 'package:big_like/features/settings/domain/models/company_profile_page_api_model.dart';
 import 'package:big_like/utils/helpers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import '../../../../common_widgets/custom_filed_elevated_btn.dart';
 import '../../../../local_storage/shared_preferences.dart';
 import '../../../auth/presentation/screens/auth_model_screen.dart';
+import '../../../settings/presentation/screens/com_profile_screen_model.dart';
 import '../widgets/clicked_container.dart';
 import 'package:intl/intl.dart';
 
@@ -97,11 +101,11 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> with Helpers {
                 ),
                 ClickedContainer(
                   fun: () {
-                    Helpers.showCheckoutDialog(
+                    Helpers.showCheckoutBottomSheet(
                         context: context,
                         title: 'العنوان',
-                        content: 'قم بادخال العنوان رجاءا',
-                        hintText: 'العنوان..',
+                        content: 'رجاءا قم بادخال العنوان',
+                        hintText: 'العنوان',
                         controller: addressTextEditingController,
                         iconUrl: 'assets/images/svgIcons/location_pin.svg',
                         function: () {
@@ -122,12 +126,12 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> with Helpers {
                 ),
                 ClickedContainer(
                   fun: () {
-                    Helpers.showCheckoutDialog(
+                    Helpers.showCheckoutBottomSheet(
                         context: context,
                         title: 'ملاحظات',
                         iconUrl: 'assets/images/svgIcons/note_icon.svg',
                         content: 'قم بادخال ملاحظاتك رجاءا',
-                        hintText: 'ملاحظات..',
+                        hintText: 'ملاحظات',
                         controller: noteTextEditingController,
                         function: () {
                           setState(() {
@@ -138,7 +142,7 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> with Helpers {
                         });
                   },
                   title: noteTextEditingController.text.isEmpty
-                      ? 'ملاحظات..'
+                      ? 'ملاحظات'
                       : noteTextEditingController.text,
                   iconUrl: 'assets/images/svgIcons/note_icon.svg',
                 ),
@@ -147,7 +151,7 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> with Helpers {
                 ),
                 ClickedContainer(
                   fun: () {
-                    Helpers.showCheckoutDialog(
+                    Helpers.showCheckoutBottomSheet(
                         context: context,
                         title: 'كوبون الخصم',
                         content: 'هل لديك كوبون ؟!',
@@ -176,10 +180,22 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> with Helpers {
                 SizedBox(
                   height: 4.h,
                 ),
-                Text(
-                  'شروط الإستخدام',
-                  style:
-                      TextStyle(fontWeight: FontWeight.w700, fontSize: 11.sp),
+                InkWell(
+                  onTap: () {
+                    showCupertinoModalBottomSheet(
+                      expand: false,
+                      context: context,
+                      backgroundColor: Colors.transparent,
+                      builder: (context) => const WebViewerScreen(
+                          url:
+                              'https://en.wikipedia.org/wiki/Terms_of_service'),
+                    );
+                  },
+                  child: Text(
+                    'شروط الإستخدام',
+                    style:
+                        TextStyle(fontWeight: FontWeight.w700, fontSize: 11.sp),
+                  ),
                 ),
               ],
             ),
@@ -214,6 +230,22 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> with Helpers {
                     CustomFiledElevatedBtn(
                         function: () {
                           if (checkoutBloc.sendOrderModel.address == null) {
+                            Helpers.showCheckoutBottomSheet(
+                                context: context,
+                                title: 'العنوان',
+                                content: 'رجاءا قم بادخال العنوان',
+                                hintText: 'العنوان',
+                                controller: addressTextEditingController,
+                                iconUrl:
+                                    'assets/images/svgIcons/location_pin.svg',
+                                function: () {
+                                  setState(() {
+                                    checkoutBloc.sendOrderModel.address =
+                                        addressTextEditingController.text
+                                            .trim();
+                                  });
+                                  Navigator.pop(context);
+                                });
                             showSnackBar(context,
                                 massage: 'قم بداخال العنوان رجاءا',
                                 error: true);

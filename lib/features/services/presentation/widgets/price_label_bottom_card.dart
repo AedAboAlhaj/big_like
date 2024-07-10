@@ -34,7 +34,7 @@ class _PriceLabelBottomCardState extends State<PriceLabelBottomCard> {
   @override
   Widget build(BuildContext context) {
     return Positioned(
-      bottom: 20.h,
+      bottom: 15.h,
       left: 15.w,
       right: 15.w,
       child: InkWell(
@@ -67,7 +67,7 @@ class _PriceLabelBottomCardState extends State<PriceLabelBottomCard> {
                     color: kWhiteColor,
                     fontFamily: kFontFamilyName,
                     fontWeight: FontWeight.bold,
-                    fontSize: 20.sp),
+                    fontSize: 17.sp),
               ),
               const Spacer(),
               Text(

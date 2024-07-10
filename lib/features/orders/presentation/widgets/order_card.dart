@@ -55,7 +55,7 @@ class _OrderCardState extends State<OrderCard> {
       margin: EdgeInsets.only(bottom: 20.h),
       padding: EdgeInsets.all(20.h),
       decoration: BoxDecoration(
-          color: Colors.grey.shade200, borderRadius: BorderRadius.circular(8)),
+          color: kWhiteColor, borderRadius: BorderRadius.circular(8)),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
@@ -297,7 +297,7 @@ class _OrderCardState extends State<OrderCard> {
                   )),
             ],
           ),
-          SizedBox(
+          /*         SizedBox(
             height: 20.h,
           ),
           Container(
@@ -305,6 +305,7 @@ class _OrderCardState extends State<OrderCard> {
               width: double.infinity,
               child:
                   CustomFiledElevatedBtn(function: () {}, text: 'تفاصيل الطلب'))
+      */
         ],
       ),
     );

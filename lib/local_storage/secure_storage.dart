@@ -16,6 +16,7 @@ class AppSecureStorage {
 
   static const String tokenKey = 'token';
   static const String phoneKey = 'phone';
+  static const String userNameKey = 'user_name';
 
   ///***TOKEN***///
   Future deleteToken() async {
@@ -46,6 +47,20 @@ class AppSecureStorage {
 
   Future getPhone() async {
     var res = await _storage.read(key: phoneKey);
+    return res;
+  }
+
+  ///***PHONE NUMBER***///
+  Future deleteUserName() async {
+    await _storage.delete(key: userNameKey);
+  }
+
+  Future setUserName(String x) async {
+    await _storage.write(key: userNameKey, value: x);
+  }
+
+  Future getUserName() async {
+    var res = await _storage.read(key: userNameKey);
     return res;
   }
 }

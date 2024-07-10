@@ -19,7 +19,7 @@ class RequirementsApiController {
     } catch (e) {
       return [];
     }
-
+    print(response.body);
     if (response.statusCode == 200) {
       var jsonObject = jsonDecode(response.body);
 

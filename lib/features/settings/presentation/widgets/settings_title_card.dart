@@ -39,7 +39,7 @@ class CamPagesTitleCard extends StatelessWidget {
               context,
               MaterialPageRoute(
                   builder: (context) => CamProfilePageModel(
-                        comProfilePagesModel: comProfilePagesModel,
+                        companyProfilePageApiModel: comProfilePagesModel,
                       )));
         },
       ),

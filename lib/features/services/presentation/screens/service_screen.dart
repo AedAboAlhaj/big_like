@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:big_like/common_widgets/custom_network_image.dart';
+import 'package:big_like/common_widgets/shimmer_effect.dart';
 import 'package:big_like/features/services/bloc/services_bloc.dart';
 import 'package:big_like/features/services/domain/models/service_model.dart';
 import 'package:big_like/features/services/presentation/widgets/price_label_bottom_card.dart';
@@ -105,7 +106,7 @@ class _ServiceScreenState extends State<ServiceScreen>
                 );
               }
               if (state is! ShowServiceSuccess) {
-                return const CustomLoadingIndicator();
+                return const ShimmerEffect(content: ProductSimmerScreen());
               }
               serviceModel = state.serviceModel;
               if (!(serviceModel.options.any(
@@ -146,6 +147,7 @@ class _ServiceScreenState extends State<ServiceScreen>
                                           _transformationController,
                                       child: CustomNetworkImage(
                                         imageUrl: serviceModel.cover,
+                                        imageHeight: 300,
                                       ),
                                     ),
                                   );
@@ -180,7 +182,7 @@ class _ServiceScreenState extends State<ServiceScreen>
                                         ),
                                       ),
                                     ),
-                                    const Spacer(),
+                                    /*     const Spacer(),
                                     Text(
                                       '(تقييم 90)',
                                       style: TextStyle(
@@ -225,7 +227,7 @@ class _ServiceScreenState extends State<ServiceScreen>
                                         fontFamily: kFontFamilyName,
                                         fontWeight: FontWeight.w700,
                                       ),
-                                    )
+                                    )*/
                                   ],
                                 ),
                               ),

@@ -114,7 +114,8 @@ class _SidesCardState extends State<ServiceOptionCard>
                       widget.options.fullDesc,
                       maxLines: 3,
                       style: TextStyle(
-                        fontSize: 12.sp,
+                        fontSize: 10.sp,
+                        letterSpacing: .2,
                         color: kGrayColor,
                         fontWeight: FontWeight.w500,
                         fontFamily: kFontFamilyName,
@@ -122,6 +123,9 @@ class _SidesCardState extends State<ServiceOptionCard>
                     ),
                   ],
                 ),
+              ),
+              SizedBox(
+                width: 20.w,
               ),
               Text(
                 '₪${widget.options.cost}',

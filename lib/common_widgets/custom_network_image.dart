@@ -6,9 +6,11 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../constants/consts.dart';
 
 class CustomNetworkImage extends StatelessWidget {
-  const CustomNetworkImage({super.key, required this.imageUrl});
+  const CustomNetworkImage(
+      {super.key, required this.imageUrl, this.imageHeight});
 
   final String? imageUrl;
+  final int? imageHeight;
 
   @override
   Widget build(BuildContext context) {
@@ -27,8 +29,8 @@ class CustomNetworkImage extends StatelessWidget {
               child: ShimmerImageEffect(
                   content: Container(
                 decoration: BoxDecoration(
-                    color: Colors.white, borderRadius: kBorderRadius5),
-                height: 155.h,
+                    color: kWhiteColor, borderRadius: kBorderRadius5),
+                height: double.infinity,
                 width: double.infinity,
               )),
             ),
